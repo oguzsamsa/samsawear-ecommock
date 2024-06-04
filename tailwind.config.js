@@ -6,9 +6,15 @@ export default {
   ],
   theme: {
     fontFamily: {
-      'display': ['Montserrat']
+      'display': ['Montserrat', 'sans-serif']
     },
-    extend: {},
+    extend: {
+      colors: {
+        'primary-color': '#23A6F0',
+        'text-color': '#252B42',
+        'second-text-color': '#737373'
+      }
+    },
   },
   plugins: [],
 }

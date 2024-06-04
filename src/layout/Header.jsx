@@ -1,11 +1,4 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faShoppingCart,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,51 +7,78 @@ export default function Header() {
   };
   return (
     <header className="font-display">
-      <div className=" w-5/6 mx-auto flex justify-between py-6">
-        <h6 className="font-display font-bold text-2xl">Bandage</h6>
-        <div className="flex gap-5 items-center">
-          <FontAwesomeIcon icon={faUser} size="lg" />
-          <FontAwesomeIcon icon={faSearch} size="lg" />
-          <FontAwesomeIcon icon={faShoppingCart} size="lg" />
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            size="lg"
+      <div className="bg-[#252B42] text-white w-full py-3 font-bold text-sm hidden lg:block">
+        <div className="w-11/12 flex mx-auto justify-between">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
+              <i className="fas fa-phone"></i>
+              <p>(225) 555-0118</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <i className="fa-solid fa-envelope"></i>
+              <p>michelle.rivera@example.com</p>
+            </div>
+          </div>
+          <h1>Follow Us and get a chance to win 80% off</h1>
+          <div className="flex items-center gap-4">
+            <p>Follow Us :</p>
+            <i className="fa-brands fa-instagram"></i>
+            <i className="fa-brands fa-youtube"></i>
+            <i className="fa-brands fa-facebook"></i>
+            <i className="fa-brands fa-twitter"></i>
+          </div>
+        </div>
+      </div>
+      <div className=" w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
+        <div className="flex gap-24">
+          <h6 className="font-display font-bold text-2xl">Bandage</h6>
+          <ul className="hidden lg:flex gap-3 items-center text-[#737373] font-bold">
+            <li>Home</li>
+            <li className="font-medium text-[#252B42] cursor-pointer ">
+              Shop
+              <i className="fas fa-chevron-down fa-xs pl-2 "></i>
+            </li>
+            <li>About</li>
+            <li>Blog</li>
+            <li>Contact</li>
+            <li>Pages</li>
+          </ul>
+        </div>
+        <div className="flex gap-6 items-center md:text-[#23A6F0]">
+          <div className="flex items-center gap-1">
+            <i className="fas fa-user fa-lg ]"></i>
+            <p className="font-bold hidden lg:block">Login / Register</p>
+          </div>
+
+          <i className="fas fa-search fa-lg"></i>
+          <div className="flex items-center gap-1">
+            <i className="fas fa-shopping-cart fa-lg "></i>
+            <p className="hidden lg:block">1</p>
+          </div>
+
+          <i
+            className="fas fa-bars fa-lg lg:hidden cursor-pointer"
             onClick={toggleMenu}
-          />
+          ></i>
+          <div className=" hidden lg:flex items-center gap-1 ">
+            <i className="fas fa-heart hidden lg:block"></i>
+            <p className="hidden lg:block">1</p>
+          </div>
         </div>
       </div>
       <div
         className={`${
           !menuOpen ? "hidden" : ""
-        } text-center py-6 font-display text-3xl text-[#737373]`}
+        } text-center py-6 font-display text-3xl text-[#737373] md:hidden`}
       >
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-3 ">
           <li>Home</li>
-          <li>Shop</li>
+          <li>Shop </li>
           <li>About</li>
           <li>Blog</li>
           <li>Contact</li>
           <li>Pages</li>
         </ul>
-      </div>
-      <div className=" w-11/12 bg-gradient-to-r from-[#96E9FB] to-[#ABECD6] h-auto mx-auto rounded-xl mt-6 flex flex-col pt-12">
-        <div className="flex flex-col text-center items-center gap-6">
-          <p className="font-bold text-base text-[#2A7CC7]">SUMMER 2024</p>
-          <h1 className="font-bold text-[40px] text-[#252B42] w-3/4 leading-tight">
-            NEW COLLECTION
-          </h1>
-          <p className="w-1/2 text-xl leading-normal text-[#737373]">
-            We know how large objects will act, but things on a small scale.
-          </p>
-          <button className="font-bold text-2xl bg-[#23A6F0] text-white px-6 py-3 rounded">
-            SHOP NOW
-          </button>
-        </div>
-        <img
-          src="./../../public/assets/homepage/homepage-header-mobile-hero.png"
-          alt=""
-          className="w-full"
-        />
       </div>
     </header>
   );
