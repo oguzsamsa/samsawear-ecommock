@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
           <div className="w-full md:w-1/3 flex flex-col mx-auto">
             <h1 className="font-bold text-[#252B42] mb-5">Get In Touch</h1>
-            <div className="flex w-full md:flex-col">
+            <div className="flex w-full md:flex-col lg:flex-row">
               <input
                 className="text-[#737373] font-sm bg-[#F9F9F9] pl-4 py-4 border border-[#E6E6E6] rounded-tl-md rounded-bl-md w-2/3 md:w-full"
                 type="text"

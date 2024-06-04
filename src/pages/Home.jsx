@@ -2,17 +2,10 @@ import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import ProductPost from "../components/ProductPost";
 import { products } from "../data/products";
+import { posts } from "../data/posts";
+import { logos } from "../data/logos";
 
 export default function Home() {
-  const logos = [
-    "Vector",
-    "Vector2",
-    "Vector3",
-    "Vector4",
-    "Vector5",
-    "Vector6",
-  ];
-
   const [displayedProductCount, setDisplayedProductCount] = useState(5);
 
   const handleResize = () => {
@@ -22,26 +15,6 @@ export default function Home() {
       setDisplayedProductCount(5);
     }
   };
-
-  const posts = [
-    {
-      id: 1,
-      title: "Loudest à la Madison #1 <br/> (L'integral)",
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-      date: "22 April 2021",
-      comments: 10,
-    },
-
-    {
-      id: 2,
-      title: `Loudest à la Madison #1 <br/> (L'integral)`,
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-      date: "22 April 2021",
-      comments: 10,
-    },
-  ];
 
   useEffect(() => {
     handleResize();
@@ -68,7 +41,7 @@ export default function Home() {
           </button>
         </div>
         <img
-          src="./../../public/assets/homepage/homepage-header-mobile-hero.png"
+          src="./../../assets/homepage/homepage-header-mobile-hero.png"
           alt=""
           className="w-full  absolute -bottom-8 max-md:-left-8 z-10 md:-right-10 lg:-right-20 md:bottom-0 md:w-1/2 lg:w-1/2"
         />
@@ -82,7 +55,7 @@ export default function Home() {
           {logos.map((logo, index) => (
             <img
               key={index}
-              src={`../../public/assets/homepage/homepage-logos/${logo}.png`}
+              src={`../../assets/homepage/homepage-logos/${logo}.png`}
               alt=""
               className=" md:w-[10%] h-auto"
             />
@@ -90,7 +63,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex w-5/6 mx-auto flex-col gap-4 py-12 md:flex-row">
-        <div className="bg-[url('../../public/assets/homepage/hero-content-1.jpg')] basis-1/2 w-full  mx-auto bg-cover bg-center flex items-end pt-[340px]">
+        <div className="bg-[url('../../assets/homepage/hero-content-1.jpg')] basis-1/2 w-full  mx-auto bg-cover bg-center flex items-end pt-[340px]">
           <div className="bg-[#2D8BC0] bg-opacity-75 p-10">
             <h2 className="text-white text-2xl font-bold py-6">
               Top Product Of the Week
@@ -101,7 +74,7 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col gap-4 basis-1/2">
-          <div className="bg-[url('../../public/assets/homepage/hero-content-2.jpg')] w-full   mx-auto bg-cover bg-center flex items-end pt-[120px]">
+          <div className="bg-[url('../../assets/homepage/hero-content-2.jpg')] w-full   mx-auto bg-cover bg-center flex items-end pt-[120px]">
             <div className="bg-[#2D8BC0] bg-opacity-75 p-10">
               <h2 className="text-white text-2xl font-bold py-6">
                 Top Product Of the Week
@@ -111,7 +84,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className="bg-[url('../../public/assets/homepage/hero-content-3.jpg')] w-full   mx-auto bg-cover bg-center flex items-end pt-[120px]">
+          <div className="bg-[url('../../assets/homepage/hero-content-3.jpg')] w-full   mx-auto bg-cover bg-center flex items-end pt-[120px]">
             <div className="bg-[#2D8BC0] bg-opacity-75 p-10">
               <h2 className="text-white text-2xl font-bold py-6">
                 Top Product Of the Week
@@ -166,7 +139,7 @@ export default function Home() {
           </p>
         </div>
         <div className="flex w-4/5 mx-auto gap-2 md:-order-1 md:w-1/2">
-          <img src="../../public/assets/homepage/col-md-6.png" alt="" />
+          <img src="../../assets/homepage/col-md-6.png" alt="" />
         </div>
       </div>
       <div className="features flex flex-col py-16">
@@ -182,7 +155,7 @@ export default function Home() {
         <div className="flex flex-col text-center gap-16 md:flex-row md:justify-between md:w-3/5 mx-auto pb-20">
           <div className="flex flex-col items-center gap-4 mx-auto flex-1">
             <img
-              src="../../public/assets/homepage/icon-1.svg"
+              src="../../assets/homepage/icon-1.svg"
               alt=""
               className="w-16 mx-auto"
             />
@@ -193,7 +166,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center gap-4 mx-auto flex-1">
             <img
-              src="../../public/assets/homepage/icon-2.svg"
+              src="../../assets/homepage/icon-2.svg"
               alt=""
               className="w-16 mx-auto"
             />
@@ -205,7 +178,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center gap-4 mx-auto flex-1">
             <img
-              src="../../public/assets/homepage/icon-3.svg"
+              src="../../assets/homepage/icon-3.svg"
               alt=""
               className="w-16 mx-auto"
             />
@@ -229,7 +202,7 @@ export default function Home() {
           {posts.map((post) => (
             <ProductPost
               key={post.id}
-              imageSrc={`../../public/assets/homepage/product-post-images/post-img-${post.id}.png`}
+              imageSrc={`../../assets/homepage/product-post-images/post-img-${post.id}.png`}
               title={post.title}
               description={post.description}
               date={post.date}

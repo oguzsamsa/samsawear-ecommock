@@ -1,7 +1,7 @@
 export const products = [
     {
       id: 1,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-1.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-1.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -9,7 +9,7 @@ export const products = [
     },
     {
       id: 2,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-2.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-2.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -17,7 +17,7 @@ export const products = [
     },
     {
       id: 3,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-3.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-3.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -25,7 +25,7 @@ export const products = [
     },
     {
       id: 4,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-4.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-4.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -33,7 +33,7 @@ export const products = [
     },
     {
       id: 5,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-5.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-5.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -41,7 +41,7 @@ export const products = [
     },
     {
       id: 6,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-6.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-6.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -49,7 +49,7 @@ export const products = [
     },
     {
       id: 7,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-7.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-7.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -57,7 +57,7 @@ export const products = [
     },
     {
       id: 8,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-8.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-8.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -65,7 +65,7 @@ export const products = [
     },
     {
       id: 9,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-9.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-9.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,
@@ -73,7 +73,7 @@ export const products = [
     },
     {
       id: 10,
-      imgSrc: "../../public/assets/homepage/product-card-images/product-cover-10.png",
+      imgSrc: "../../assets/homepage/product-card-images/product-cover-10.png",
       title: "Graphic Design",
       department: "English Department",
       oldPrice: 16.48,

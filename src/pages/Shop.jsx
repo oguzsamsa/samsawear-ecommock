@@ -2,41 +2,10 @@ import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import ShopCard from "../components/ShopCard";
 import { products } from "../data/products";
+import { shopCard } from "../data/shopCard";
+import { logos } from "../data/logos";
 
 export default function Shop() {
-  const shopCard = [
-    {
-      id: 1,
-      imgSrc: "../../public/assets/shop-page/shop-cards/shop-card-1.png",
-      title: "CLOTHS",
-      itemsCount: 5,
-    },
-    {
-      id: 2,
-      imgSrc: "../../public/assets/shop-page/shop-cards/shop-card-2.png",
-      title: "CLOTHS",
-      itemsCount: 5,
-    },
-    {
-      id: 3,
-      imgSrc: "../../public/assets/shop-page/shop-cards/shop-card-3.png",
-      title: "CLOTHS",
-      itemsCount: 5,
-    },
-    {
-      id: 4,
-      imgSrc: "../../public/assets/shop-page/shop-cards/shop-card-4.png",
-      title: "CLOTHS",
-      itemsCount: 5,
-    },
-    {
-      id: 5,
-      imgSrc: "../../public/assets/shop-page/shop-cards/shop-card-5.png",
-      title: "CLOTHS",
-      itemsCount: 5,
-    },
-  ];
-
   const [displayedProductCount, setDisplayedProductCount] = useState(4);
 
   const handleResize = () => {
@@ -92,7 +61,7 @@ export default function Shop() {
           </button>
         </div>
       </div>
-      <div className="products flex flex-col items-center gap-8 py-8 md:flex-row md:flex-wrap md:w-11/12 md:justify-center md:mx-auto">
+      <div className="products flex flex-col items-center gap-8 py-16 md:flex-row md:flex-wrap md:w-11/12 md:justify-center md:mx-auto">
         {displayedProducts.map((product) => (
           <ProductCard
             key={product.id}
@@ -103,6 +72,35 @@ export default function Shop() {
             newPrice={product.newPrice}
           />
         ))}
+        <div className="flex text-sm font-bold mt-12">
+          <button className="p-4 text-[#BDBDBD] bg-[#F3F3F3] border-2 border-[#BDBDBD] border-r-[#E8E8E8] rounded-[4px] rounded-tr-none rounded-br-none">
+            First
+          </button>
+          <button className="p-4 border-l-0 text-primary-color bg-white border-2 border-[#BDBDBD] border-r-[#E8E8E8]">
+            1
+          </button>
+          <button className="p-4  border-2 border-[#BDBDBD] border-l-0 border-r-[#E8E8E8] bg-primary-color text-white">
+            2
+          </button>
+          <button className="p-4 border-2 border-[#BDBDBD] border-l-0 text-primary-color border-r-[#E8E8E8]">
+            3
+          </button>
+          <button className="p-4 text-primary-color border-2 border-[#BDBDBD] border-l-0 rounded-[4px] rounded-l-none">
+            Next
+          </button>
+        </div>
+      </div>
+      <div className="logos flex justify-center py-24  bg-[#FAFAFA]">
+        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-16">
+          {logos.map((logo, index) => (
+            <img
+              key={index}
+              src={`../../assets/homepage/homepage-logos/${logo}.png`}
+              alt=""
+              className=" md:w-[10%] h-auto"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
