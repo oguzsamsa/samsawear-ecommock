@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,10 +34,15 @@ export default function Header() {
         <div className="flex gap-24">
           <h6 className="font-display font-bold text-2xl">Bandage</h6>
           <ul className="hidden lg:flex gap-3 items-center text-[#737373] font-bold">
-            <li>Home</li>
+            <li>
+              {" "}
+              <Link to="/">Home</Link>
+            </li>
             <li className="font-medium text-[#252B42] cursor-pointer ">
-              Shop
-              <i className="fas fa-chevron-down fa-xs pl-2 "></i>
+              <Link to="/shop">
+                Shop
+                <i className="fas fa-chevron-down fa-xs pl-2 "></i>
+              </Link>
             </li>
             <li>About</li>
             <li>Blog</li>
