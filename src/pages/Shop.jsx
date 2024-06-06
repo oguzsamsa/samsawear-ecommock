@@ -66,6 +66,7 @@ export default function Shop() {
           {displayedProducts.map((product) => (
             <ProductCard
               key={product.id}
+              id={product.id}
               imageSrc={product.imgSrc}
               title={product.title}
               department={product.department}
