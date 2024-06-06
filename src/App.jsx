@@ -3,6 +3,7 @@ import Footer from "./layout/Footer";
 import Header from "./layout/Header";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -12,8 +13,11 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/shop">
+        <Route exact path="/shop">
           <Shop />
+        </Route>
+        <Route path="/shop/product-detail">
+          <ProductDetail />
         </Route>
       </Switch>
       <Footer />

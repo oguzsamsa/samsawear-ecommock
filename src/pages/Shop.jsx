@@ -61,17 +61,20 @@ export default function Shop() {
           </button>
         </div>
       </div>
-      <div className="products flex flex-col items-center gap-8 py-16 md:flex-row md:flex-wrap md:w-11/12 md:justify-center md:mx-auto">
-        {displayedProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            imageSrc={product.imgSrc}
-            title={product.title}
-            department={product.department}
-            oldPrice={product.oldPrice}
-            newPrice={product.newPrice}
-          />
-        ))}
+      <div className="flex flex-col items-center gap-8 py-16  md:w-11/12 md:justify-center md:mx-auto">
+        <div className="products flex flex-col items-center gap-8 py-16 md:flex-row md:flex-wrap md:w-11/12 md:justify-center md:mx-auto">
+          {displayedProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              imageSrc={product.imgSrc}
+              title={product.title}
+              department={product.department}
+              oldPrice={product.oldPrice}
+              newPrice={product.newPrice}
+            />
+          ))}
+        </div>
+
         <div className="flex text-sm font-bold mt-12">
           <button className="p-4 text-[#BDBDBD] bg-[#F3F3F3] border-2 border-[#BDBDBD] border-r-[#E8E8E8] rounded-[4px] rounded-tr-none rounded-br-none">
             First
