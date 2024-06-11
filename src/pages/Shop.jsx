@@ -44,7 +44,7 @@ export default function Shop() {
 
       <div className="sort flex flex-col items-center py-8 gap-4 md:flex-row md:justify-between md:w-11/12 md:mx-auto">
         <h1 className="text-second-text-color text-sm font-bold">
-          Showing all 12 results
+          Showing all {displayedProductCount} results
         </h1>
         <div className="flex items-center gap-4">
           <p className="text-second-text-color text-sm font-bold">Views:</p>
@@ -62,7 +62,7 @@ export default function Shop() {
         </div>
       </div>
       <div className="flex flex-col items-center gap-8 py-16  md:w-11/12 md:justify-center md:mx-auto">
-        <div className="products flex flex-col items-center gap-8 py-16 md:flex-row md:flex-wrap md:w-11/12 md:justify-center md:mx-auto">
+        <div className="product-cards flex flex-col max-md:gap-12 md:flex-row justify-center flex-wrap ">
           {displayedProducts.map((product) => (
             <ProductCard
               key={product.id}

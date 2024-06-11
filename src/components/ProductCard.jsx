@@ -8,7 +8,10 @@ const ProductCard = ({
   oldPrice,
   newPrice,
 }) => (
-  <Link to={`/shop/product-detail/${id}`} className="w-4/5 md:w-1/4 lg:w-[15%]">
+  <Link
+    to={`/shop/product-detail/${id}`}
+    className="w-full md:w-1/3 lg:w-1/4 p-2"
+  >
     <div className="product-card flex flex-col text-center">
       <img src={imageSrc} alt={title} className="mb-4" />
       <h1 className="text-[#252B42] font-bold">{title}</h1>
