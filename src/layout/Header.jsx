@@ -50,7 +50,9 @@ export default function Header() {
             <li>
               <NavLink to="/contact">Contact</NavLink>
             </li>
-            <li>Pages</li>
+            <li>
+              <NavLink to="/team">Team</NavLink>
+            </li>
           </ul>
         </div>
         <div className="flex gap-6 items-center md:text-[#23A6F0]">
@@ -81,14 +83,22 @@ export default function Header() {
         } text-center py-6 font-display text-3xl text-[#737373] md:hidden`}
       >
         <ul className="flex flex-col gap-3 ">
-          <NavLink to="/">Home</NavLink>
+          <li>
+            <NavLink to="/">Home</NavLink>
+          </li>
+
           <li>
             <NavLink to="/shop">Shop</NavLink>
           </li>
           <li>About</li>
           <li>Blog</li>
-          <NavLink to="/contact">Contact</NavLink>
-          <li>Pages</li>
+          <li>
+            <NavLink to="/contact">Contact</NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/team">Team</NavLink>
+          </li>
         </ul>
       </div>
     </header>

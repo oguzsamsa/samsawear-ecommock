@@ -150,7 +150,7 @@ export default function ProductDetail() {
         </div>
         <div className="flex flex-col w-5/6 md:flex-row mx-auto md:w-full md:justify-between">
           <img
-            src="../../public/assets/product-detail-page/product-description-img.png"
+            src="../../assets/product-detail-page/product-description-img.png"
             alt=""
             className="mb-12 md:mb-0 object-contain md:w-[30%]"
           />
