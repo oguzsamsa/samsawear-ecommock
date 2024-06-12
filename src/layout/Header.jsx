@@ -37,15 +37,17 @@ export default function Header() {
           <ul className="hidden lg:flex gap-3 items-center text-[#737373] font-bold">
             <li>
               {" "}
-              <Link to="/">Home</Link>
+              <NavLink to="/">Home</NavLink>
             </li>
             <li className="font-medium text-[#252B42] cursor-pointer ">
-              <Link to="/shop">
+              <NavLink to="/shop">
                 Shop
                 <i className="fas fa-chevron-down fa-xs pl-2 "></i>
-              </Link>
+              </NavLink>
             </li>
-            <li>About</li>
+            <li>
+              <NavLink to="/about">About</NavLink>
+            </li>
             <li>Blog</li>
             <li>
               <NavLink to="/contact">Contact</NavLink>
@@ -90,7 +92,9 @@ export default function Header() {
           <li>
             <NavLink to="/shop">Shop</NavLink>
           </li>
-          <li>About</li>
+          <li>
+            <NavLink to="/about">About</NavLink>
+          </li>
           <li>Blog</li>
           <li>
             <NavLink to="/contact">Contact</NavLink>

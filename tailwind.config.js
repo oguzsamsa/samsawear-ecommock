@@ -12,7 +12,8 @@ export default {
       colors: {
         'primary-color': '#23A6F0',
         'text-color': '#252B42',
-        'second-text-color': '#737373'
+        'second-text-color': '#737373',
+        'danger-text-color': '#E74040'
       }
     },
   },
