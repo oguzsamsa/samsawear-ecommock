@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { products } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import { logos } from "../data/logos";
+import PartnerLogos from "../components/PartnerLogos";
 
 const images = [
   "../../assets/product-detail-page/carousel-item.png",
@@ -239,18 +240,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
-      <div className="logos flex justify-center py-24  bg-white">
-        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-16">
-          {logos.map((logo, index) => (
-            <img
-              key={index}
-              src={`../../assets/homepage/homepage-logos/${logo}.png`}
-              alt=""
-              className=" md:w-[10%] h-auto"
-            />
-          ))}
-        </div>
-      </div>
+      <PartnerLogos />
     </div>
   );
 }

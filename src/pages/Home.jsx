@@ -5,6 +5,7 @@ import { products } from "../data/products";
 import { posts } from "../data/posts";
 import { logos } from "../data/logos";
 import HomePageSlider from "../components/HomePageSlider";
+import PartnerLogos from "../components/PartnerLogos";
 
 export default function Home() {
   const [displayedProductCount, setDisplayedProductCount] = useState(5);
@@ -27,21 +28,8 @@ export default function Home() {
 
   return (
     <div className="font-display">
-      <div>
-        <HomePageSlider />
-      </div>
-      <div className="logos flex justify-center py-24 w-3/4 mx-auto">
-        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-16">
-          {logos.map((logo, index) => (
-            <img
-              key={index}
-              src={`../../assets/homepage/homepage-logos/${logo}.png`}
-              alt=""
-              className=" md:w-[10%] h-auto"
-            />
-          ))}
-        </div>
-      </div>
+      <HomePageSlider />
+      <PartnerLogos />
       <div className="flex w-5/6 mx-auto flex-col gap-4 py-12 md:flex-row">
         <div className="bg-[url('../../assets/homepage/hero-content-1.jpg')] basis-1/2 w-full  mx-auto bg-cover bg-center flex items-end pt-[340px]">
           <div className="bg-[#2D8BC0] bg-opacity-75 p-10">

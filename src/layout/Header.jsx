@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom/cjs/react-router-dom";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Header() {
@@ -46,7 +47,9 @@ export default function Header() {
             </li>
             <li>About</li>
             <li>Blog</li>
-            <li>Contact</li>
+            <li>
+              <NavLink to="/contact">Contact</NavLink>
+            </li>
             <li>Pages</li>
           </ul>
         </div>
@@ -78,11 +81,13 @@ export default function Header() {
         } text-center py-6 font-display text-3xl text-[#737373] md:hidden`}
       >
         <ul className="flex flex-col gap-3 ">
-          <li>Home</li>
-          <li>Shop </li>
+          <NavLink to="/">Home</NavLink>
+          <li>
+            <NavLink to="/shop">Shop</NavLink>
+          </li>
           <li>About</li>
           <li>Blog</li>
-          <li>Contact</li>
+          <NavLink to="/contact">Contact</NavLink>
           <li>Pages</li>
         </ul>
       </div>

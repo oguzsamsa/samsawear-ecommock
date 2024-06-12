@@ -75,7 +75,7 @@ const HomePageSlider = () => {
         className="w-full absolute -bottom-8 max-md:-left-8 z-10 md:-right-10 lg:-right-20 md:bottom-0 md:w-1/2 lg:w-1/2"
       />
       <div className="w-[47px] h-[47px] md:h-16 md:w-16 lg:w-[80px] lg:h-[80px] rounded-full bg-white absolute max-md:bottom-60 md:bottom-44 md:right-72 lg:top-0 lg:right-[470px]"></div>
-      <div className="w-[250px] h-[250px] lg:w-[500px] lg:h-[500px] rounded-full bg-white absolute max-md:bottom-[47px] max-md:left-[37px] md:right-5 md:bottom-10 lg:-right-3 lg:-top-3"></div>
+      <div className="w-[250px] h-[250px] xl:w-[400px] xl:h-[400px] rounded-full bg-white absolute max-md:bottom-[47px] max-md:left-[37px] md:right-5 md:bottom-10 lg:-right-3 lg:-top-3"></div>
       <div className="w-[18px] h-[18px] lg:w-[31px] md:w-6 md:h-6 lg:h-[31px] rounded-full bg-white absolute max-md:bottom-[160px] max-md:right-[40px] md:-right-4 md:bottom-44 lg:-right-[23px] lg:top-[280px] z-20"></div>
       <div className="w-[9px] lg:w-[15px] lg:h-[15px] h-[9px] md:w-3 md:h-3 rounded-full bg-[#977DF4] absolute max-md:bottom-[259px] max-md:right-[26px] md:right-6 lg:-right-[47px] lg:top-[113px]"></div>
 

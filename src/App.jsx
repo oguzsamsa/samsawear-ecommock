@@ -4,6 +4,7 @@ import Header from "./layout/Header";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+        <Route path="/contact">
+          <Contact />
         </Route>
         <Route exact path="/shop">
           <Shop />

@@ -1,13 +1,13 @@
 const ProductPost = ({ imageSrc, title, description, date, comments }) => {
   return (
     <div className="flex flex-col md:flex-row w-4/5 mx-auto lg:w-2/5 gap-6">
-      <div className="relative w-full md:w-1/3">
+      <div className="relative w-full xl:w-1/3">
         <img src={imageSrc} alt={title} className="w-full h-auto md:h-full " />
         <div className="bg-[#E74040] text-white py-1 px-3 rounded-[4px] inline-block absolute top-4 left-4">
           NEW
         </div>
       </div>
-      <div className="flex flex-col p-6 border border-t-0 md:border-t md:border-none gap-4 w-full md:w-1/3">
+      <div className="flex flex-col p-6 border border-t-0 md:border-t md:border-none gap-4 w-full md:">
         <div className="flex text-xs gap-3 text-second-text-color">
           <p className="text-[#8EC2F2]">Google</p>
           <p>Trending</p>

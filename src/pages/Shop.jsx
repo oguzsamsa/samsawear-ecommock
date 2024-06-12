@@ -4,6 +4,7 @@ import ShopCard from "../components/ShopCard";
 import { products } from "../data/products";
 import { shopCard } from "../data/shopCard";
 import { logos } from "../data/logos";
+import PartnerLogos from "../components/PartnerLogos";
 
 export default function Shop() {
   const [displayedProductCount, setDisplayedProductCount] = useState(4);
@@ -94,18 +95,7 @@ export default function Shop() {
           </button>
         </div>
       </div>
-      <div className="logos flex justify-center py-24  bg-[#FAFAFA]">
-        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-16">
-          {logos.map((logo, index) => (
-            <img
-              key={index}
-              src={`../../assets/homepage/homepage-logos/${logo}.png`}
-              alt=""
-              className=" md:w-[10%] h-auto"
-            />
-          ))}
-        </div>
-      </div>
+      <PartnerLogos />
     </div>
   );
 }
