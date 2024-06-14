@@ -4,6 +4,7 @@ import ShopCard from "../components/ShopCard";
 import { products } from "../data/products";
 import { shopCard } from "../data/shopCard";
 import { logos } from "../data/logos";
+import PartnerLogos from "../components/PartnerLogos";
 
 export default function Shop() {
   const [displayedProductCount, setDisplayedProductCount] = useState(4);
@@ -44,7 +45,7 @@ export default function Shop() {
 
       <div className="sort flex flex-col items-center py-8 gap-4 md:flex-row md:justify-between md:w-11/12 md:mx-auto">
         <h1 className="text-second-text-color text-sm font-bold">
-          Showing all 12 results
+          Showing all {displayedProductCount} results
         </h1>
         <div className="flex items-center gap-4">
           <p className="text-second-text-color text-sm font-bold">Views:</p>
@@ -62,7 +63,7 @@ export default function Shop() {
         </div>
       </div>
       <div className="flex flex-col items-center gap-8 py-16  md:w-11/12 md:justify-center md:mx-auto">
-        <div className="products flex flex-col items-center gap-8 py-16 md:flex-row md:flex-wrap md:w-11/12 md:justify-center md:mx-auto">
+        <div className="product-cards flex flex-col max-md:gap-12 md:flex-row justify-center flex-wrap ">
           {displayedProducts.map((product) => (
             <ProductCard
               key={product.id}
@@ -94,18 +95,7 @@ export default function Shop() {
           </button>
         </div>
       </div>
-      <div className="logos flex justify-center py-24  bg-[#FAFAFA]">
-        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-16">
-          {logos.map((logo, index) => (
-            <img
-              key={index}
-              src={`../../assets/homepage/homepage-logos/${logo}.png`}
-              alt=""
-              className=" md:w-[10%] h-auto"
-            />
-          ))}
-        </div>
-      </div>
+      <PartnerLogos />
     </div>
   );
 }

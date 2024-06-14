@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { products } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import { logos } from "../data/logos";
+import PartnerLogos from "../components/PartnerLogos";
 
 const images = [
   "../../assets/product-detail-page/carousel-item.png",
@@ -52,7 +53,7 @@ export default function ProductDetail() {
         </div>
 
         <div className="flex flex-col w-5/6 mx-auto md:flex-row md:w-11/12 md:gap-12">
-          <div className="max-w-lg md:w-3/5">
+          <div className="max-w-lg md:w-2/5">
             <div className="relative">
               <img
                 id="mainImage"
@@ -87,7 +88,7 @@ export default function ProductDetail() {
               ))}
             </div>
           </div>
-          <div className="flex flex-col gap-4 p-4 md:w-2/5">
+          <div className="flex flex-col gap-4 p-4 md:w-3/5">
             <h1 className="text-xl text-text-color mb-1">Floating Phone</h1>
             <div className="flex items-center gap-2">
               <div className="flex text-[#F3CD03] gap-1">
@@ -149,7 +150,7 @@ export default function ProductDetail() {
         </div>
         <div className="flex flex-col w-5/6 md:flex-row mx-auto md:w-full md:justify-between">
           <img
-            src="../../public/assets/product-detail-page/product-description-img.png"
+            src="../../assets/product-detail-page/product-description-img.png"
             alt=""
             className="mb-12 md:mb-0 object-contain md:w-[30%]"
           />
@@ -181,7 +182,7 @@ export default function ProductDetail() {
               <ul className="flex flex-col gap-2 text-second-text-color text-sm font-bold">
                 <li className="flex items-center gap-2">
                   <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over
+                  over the lazy dog
                 </li>
                 <li className="flex items-center gap-2">
                   <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
@@ -225,7 +226,7 @@ export default function ProductDetail() {
             BESTSELLER PRODUCTS
           </h1>
           <hr className="border-t-2 border-[#ECECEC] w-4/5 max-md:max-w-xs md:w-full" />
-          <div className="flex flex-col items-center gap-8 md:flex-row md:flex-wrap md:justify-between">
+          <div className="flex flex-col items-center max-md:gap-8 md:flex-row md:flex-wrap md:justify-center">
             {displayedProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -239,18 +240,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
-      <div className="logos flex justify-center py-24  bg-white">
-        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-16">
-          {logos.map((logo, index) => (
-            <img
-              key={index}
-              src={`../../assets/homepage/homepage-logos/${logo}.png`}
-              alt=""
-              className=" md:w-[10%] h-auto"
-            />
-          ))}
-        </div>
-      </div>
+      <PartnerLogos />
     </div>
   );
 }

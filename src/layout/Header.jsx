@@ -1,11 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { NavLink } from "react-router-dom";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  const toggleUserMenu = () => {
+    setUserMenuOpen(!userMenuOpen);
+  };
+
   return (
     <header className="font-display">
       <div className="bg-[#252B42] text-white w-full py-3 font-bold text-sm hidden lg:block">
@@ -32,41 +39,70 @@ export default function Header() {
       </div>
       <div className=" w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
         <div className="flex gap-24">
-          <h6 className="font-display font-bold text-2xl">Bandage</h6>
+          <h6 className="font-display font-bold text-2xl">
+            <NavLink to="/">Bandage</NavLink>
+          </h6>
           <ul className="hidden lg:flex gap-3 items-center text-[#737373] font-bold">
             <li>
-              {" "}
-              <Link to="/">Home</Link>
+              <NavLink to="/">Home</NavLink>
             </li>
             <li className="font-medium text-[#252B42] cursor-pointer ">
-              <Link to="/shop">
+              <NavLink to="/shop">
                 Shop
                 <i className="fas fa-chevron-down fa-xs pl-2 "></i>
-              </Link>
+              </NavLink>
             </li>
-            <li>About</li>
+            <li>
+              <NavLink to="/about">About</NavLink>
+            </li>
             <li>Blog</li>
-            <li>Contact</li>
-            <li>Pages</li>
+            <li>
+              <NavLink to="/contact">Contact</NavLink>
+            </li>
+            <li>
+              <NavLink to="/team">Team</NavLink>
+            </li>
           </ul>
         </div>
-        <div className="flex gap-6 items-center md:text-[#23A6F0]">
+        <div className="flex gap-6 items-center md:text-[#23A6F0] relative">
           <div className="flex items-center gap-1">
-            <i className="fas fa-user fa-lg ]"></i>
-            <p className="font-bold hidden lg:block">Login / Register</p>
+            <i
+              className="fas fa-user fa-lg cursor-pointer"
+              onClick={toggleUserMenu}
+            ></i>
+            <p className="font-bold hidden lg:block">
+              Login /{" "}
+              <span>
+                <NavLink to="/signup">Register</NavLink>
+              </span>
+            </p>
           </div>
-
+          {userMenuOpen && (
+            <div className="absolute top-12 right-14 bg-white shadow-md rounded-md p-4 z-10">
+              <NavLink
+                to="/login"
+                className="block text-text-color font-bold py-1"
+              >
+                Login
+              </NavLink>
+              <NavLink
+                to="/signup"
+                className="block text-text-color font-bold py-1"
+              >
+                Register
+              </NavLink>
+            </div>
+          )}
           <i className="fas fa-search fa-lg"></i>
           <div className="flex items-center gap-1">
-            <i className="fas fa-shopping-cart fa-lg "></i>
+            <i className="fas fa-shopping-cart fa-lg"></i>
             <p className="hidden lg:block">1</p>
           </div>
-
           <i
             className="fas fa-bars fa-lg lg:hidden cursor-pointer"
             onClick={toggleMenu}
           ></i>
-          <div className=" hidden lg:flex items-center gap-1 ">
+          <div className="hidden lg:flex items-center gap-1">
             <i className="fas fa-heart hidden lg:block"></i>
             <p className="hidden lg:block">1</p>
           </div>
@@ -75,15 +111,25 @@ export default function Header() {
       <div
         className={`${
           !menuOpen ? "hidden" : ""
-        } text-center py-6 font-display text-3xl text-[#737373] md:hidden`}
+        } text-center py-6 font-display text-3xl text-[#737373] lg:hidden`}
       >
-        <ul className="flex flex-col gap-3 ">
-          <li>Home</li>
-          <li>Shop </li>
-          <li>About</li>
+        <ul className="flex flex-col gap-3">
+          <li>
+            <NavLink to="/">Home</NavLink>
+          </li>
+          <li>
+            <NavLink to="/shop">Shop</NavLink>
+          </li>
+          <li>
+            <NavLink to="/about">About</NavLink>
+          </li>
           <li>Blog</li>
-          <li>Contact</li>
-          <li>Pages</li>
+          <li>
+            <NavLink to="/contact">Contact</NavLink>
+          </li>
+          <li>
+            <NavLink to="/team">Team</NavLink>
+          </li>
         </ul>
       </div>
     </header>
