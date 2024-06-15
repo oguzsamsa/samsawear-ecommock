@@ -14,6 +14,10 @@ export default {
         'text-color': '#252B42',
         'second-text-color': '#737373',
         'danger-text-color': '#E74040'
+      },
+      aspectRatio: {
+        '7/5': '7 / 5',
+        '5/7': '5 / 7'
       }
     },
   },
