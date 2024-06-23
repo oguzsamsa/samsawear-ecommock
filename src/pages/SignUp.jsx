@@ -62,12 +62,17 @@ const SignupForm = () => {
 
   return (
     <div className="font-display flex flex-col md:flex-row items-center justify-center md:py-12">
-      <div className="w-3/4 md:w-1/3 mx-auto mb-4">
+      <div className="w-3/4 md:w-1/3 mx-auto mb-4 flex flex-col items-center">
         <h2 className="text-2xl font-bold text-center mb-4">Register</h2>
         <p className="text-center text-gray-600 ">
           Welcome to our e-commerce platform. Register now to start shopping
           with exclusive offers and deals!
         </p>
+        <img
+          src="../../assets/about-page/about-page-hero.png"
+          alt=""
+          className="max-md:hidden"
+        />
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
