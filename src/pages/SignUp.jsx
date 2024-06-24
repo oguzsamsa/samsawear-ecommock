@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRoles } from "../redux/actions/thunkActions";
 
 const SignupForm = () => {
   const {
@@ -10,22 +12,14 @@ const SignupForm = () => {
     watch,
     formState: { errors, isSubmitting },
   } = useForm();
-  const [roles, setRoles] = useState([]);
   const [submitError, setSubmitError] = useState("");
   const history = useHistory();
+  const dispatch = useDispatch();
+  const roles = useSelector((state) => state.client.roles);
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axiosInstance.get("/roles");
-        setRoles(response.data.reverse());
-      } catch (error) {
-        console.error("Couldn't get the roles:", error);
-      }
-    };
-
-    fetchRoles();
-  }, []);
+    dispatch(fetchRoles());
+  }, [dispatch]);
 
   const onSubmit = async (formData) => {
     try {
