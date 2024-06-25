@@ -8,11 +8,15 @@ import Contact from "./pages/Contact";
 import Team from "./pages/Team";
 import About from "./pages/About";
 import SignUp from "./pages/SignUp";
+import LoginForm from "./pages/Login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
       <Header />
+      <ToastContainer />
       <Switch>
         <Route exact path="/">
           <Home />
@@ -22,6 +26,9 @@ function App() {
         </Route>
         <Route path="/contact">
           <Contact />
+        </Route>
+        <Route path="/login">
+          <LoginForm />
         </Route>
         <Route path="/signup">
           <SignUp />

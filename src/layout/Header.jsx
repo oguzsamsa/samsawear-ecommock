@@ -1,9 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import md5 from "md5";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const user = useSelector((state) => state.client.user);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -12,6 +15,10 @@ export default function Header() {
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
   };
+
+  const gravatarUrl = user.email
+    ? `https://www.gravatar.com/avatar/${md5(user.email.trim().toLowerCase())}`
+    : null;
 
   return (
     <header className="font-display">
@@ -37,7 +44,7 @@ export default function Header() {
           </div>
         </div>
       </div>
-      <div className=" w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
+      <div className="w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
         <div className="flex gap-24">
           <h6 className="font-display font-bold text-2xl">
             <NavLink to="/">Bandage</NavLink>
@@ -67,18 +74,31 @@ export default function Header() {
         <div className="flex gap-6 items-center md:text-[#23A6F0] relative">
           <div className="flex items-center gap-1">
             <i
-              className="fas fa-user fa-lg cursor-pointer"
+              className={`fas fa-user fa-lg cursor-pointer ${
+                user.email ? "hidden" : ""
+              }`}
               onClick={toggleUserMenu}
             ></i>
-            <p className="font-bold hidden lg:block">
-              Login /{" "}
-              <span>
-                <NavLink to="/signup">Register</NavLink>
-              </span>
-            </p>
+            {user.email ? (
+              <div className="flex items-center gap-2">
+                <img
+                  src={gravatarUrl}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full"
+                />
+                <p className="font-bold hidden lg:block">{user.name}</p>
+              </div>
+            ) : (
+              <p className="font-bold hidden lg:block">
+                <NavLink to="/login">Login</NavLink> /{" "}
+                <span>
+                  <NavLink to="/signup">Register</NavLink>
+                </span>
+              </p>
+            )}
           </div>
-          {userMenuOpen && (
-            <div className="absolute top-12 right-14 bg-white shadow-md rounded-md p-4 z-10">
+          {userMenuOpen && !user.email && (
+            <div className="absolute top-12 right-14 bg-white shadow-md rounded-md p-4 z-10 lg:hidden">
               <NavLink
                 to="/login"
                 className="block text-text-color font-bold py-1"
