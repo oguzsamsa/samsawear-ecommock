@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { login } from "../redux/actions/thunkActions";
 
 const LoginForm = () => {
@@ -94,6 +94,13 @@ const LoginForm = () => {
         {submitError && (
           <span className="text-danger-text-color text-sm">{submitError}</span>
         )}
+
+        <p className="text-center mt-4 text-sm">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-primary-color hover:underline">
+            Register here
+          </Link>
+        </p>
       </form>
     </div>
   );

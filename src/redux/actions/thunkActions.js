@@ -1,7 +1,9 @@
 // src/redux/actions/thunkActions.js
 import axiosInstance from "../../axios/axiosInstance";
+import { fetchCategoriesFailure, fetchCategoriesRequest, fetchCategoriesSuccess } from "./categoryActions";
 import { setRoles, setUser } from "./clientActions";
 import { toast } from "react-toastify";
+import { setFetchState, setProductList, setTotal } from "./productActions";
 
 export const fetchRoles = () => {
     return async (dispatch, getState) => {
@@ -40,3 +42,63 @@ export const login = (email, password, rememberMe) => {
         }
     };
 };
+
+export const verifyToken = (history) => {
+    return async (dispatch) => {
+        
+        try {
+            const response = await axiosInstance.get("/verify");
+            const user = response.data;
+
+            dispatch(setUser(user));
+
+            // Yeni token'i localStorage'a ve axios header'ına ekleyin
+            localStorage.setItem("token", response.headers["authorization"]);
+            axiosInstance.defaults.headers["Authorization"] = response.headers["authorization"];
+
+            toast.success("Token verified successfully!");
+        } catch (error) {
+            console.error("Token verification failed:", error);
+            // Token geçerli değilse localStorage'dan ve axios header'ından token'i silin
+            localStorage.removeItem("token");
+            delete axiosInstance.defaults.headers["Authorization"];
+            toast.error("Token verification failed. Please login again.");
+
+            history.push("/login")
+        }
+    };
+};
+
+export const fetchCategories = () => {
+    return async (dispatch) => {
+        dispatch(fetchCategoriesRequest());
+
+        try {
+            const response = await axiosInstance.get('categories');
+            dispatch(fetchCategoriesSuccess(response.data));
+        } catch(error) {
+            dispatch(fetchCategoriesFailure(error.message));     
+        }
+    }
+}
+
+export const fetchProducts = () => {
+    return async (dispatch) => {
+        dispatch(setFetchState('FETCHING'));
+
+        try {
+            const response = await axiosInstance.get('/products');
+            const {total, products} = response.data;
+            dispatch(setProductList(products));
+            dispatch(setTotal(total));
+            dispatch(setFetchState('FETCHED'));
+
+        } catch(error){
+            console.error("Failed to fetch products: ", error);
+            dispatch(setFetchState('FETCH_ERROR'));
+        }
+    }
+}
+
+
+

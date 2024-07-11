@@ -2,16 +2,30 @@ import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import ShopCard from "../components/ShopCard";
 import { products } from "../data/products";
-import { shopCard } from "../data/shopCard";
-import { logos } from "../data/logos";
 import PartnerLogos from "../components/PartnerLogos";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/actions/thunkActions";
+import Spinner from "../components/Spinner";
 
 export default function Shop() {
   const [displayedProductCount, setDisplayedProductCount] = useState(4);
+  const categories = useSelector((state) => state.category.categories);
+  const displayedCategories = categories
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 5);
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.product.productList);
+  console.log(productList, "dslfksdf");
+  const totalProducts = useSelector((state) => state.product.total);
+  const fetchState = useSelector((state) => state.product.fetchState);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   const handleResize = () => {
     if (window.innerWidth >= 768) {
-      setDisplayedProductCount(products.length);
+      setDisplayedProductCount(productList.length);
     } else {
       setDisplayedProductCount(4);
     }
@@ -23,7 +37,7 @@ export default function Shop() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const displayedProducts = products.slice(0, displayedProductCount);
+  const displayedProducts = productList.slice(0, displayedProductCount);
 
   return (
     <div className="font-display">
@@ -37,9 +51,11 @@ export default function Shop() {
           </div>
         </div>
         <div className="shop-cards flex flex-col gap-4 py-8 md:flex-row md:w-[95%] md:mx-auto">
-          {shopCard.map((card) => (
-            <ShopCard card={card} />
-          ))}
+          {categories.length > 0 ? (
+            displayedCategories.map((card) => <ShopCard card={card} />)
+          ) : (
+            <Spinner />
+          )}
         </div>
       </div>
 
@@ -62,19 +78,16 @@ export default function Shop() {
           </button>
         </div>
       </div>
+      {fetchState === "FETCHING" && <Spinner />}
       <div className="flex flex-col items-center gap-8 py-16  md:w-11/12 md:justify-center md:mx-auto">
-        <div className="product-cards flex flex-col max-md:gap-12 md:flex-row justify-center flex-wrap ">
-          {displayedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              imageSrc={product.imgSrc}
-              title={product.title}
-              department={product.department}
-              oldPrice={product.oldPrice}
-              newPrice={product.newPrice}
-            />
-          ))}
+        <div className="product-cards flex flex-col max-md:gap-12 md:flex-row justify-center flex-wrap max-md:w-4/5">
+          {fetchState === "FETCHED" ? (
+            displayedProducts.map((product) => (
+              <ProductCard product={product} />
+            ))
+          ) : (
+            <Spinner />
+          )}
         </div>
 
         <div className="flex text-sm font-bold mt-12">

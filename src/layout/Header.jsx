@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import md5 from "md5";
+import { fetchCategories } from "../redux/actions/thunkActions";
+import { convertToEnglishChars } from "../utils/convertToEnglishChars";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [shopMenuOpen, setShopMenuOpen] = useState(false);
   const user = useSelector((state) => state.client.user);
+  const categories = useSelector((state) => state.category.categories);
+  console.log(categories, "dfdlsdkfds");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -16,9 +26,16 @@ export default function Header() {
     setUserMenuOpen(!userMenuOpen);
   };
 
+  const toggleShopMenu = () => {
+    setShopMenuOpen(!shopMenuOpen);
+  };
+
   const gravatarUrl = user.email
     ? `https://www.gravatar.com/avatar/${md5(user.email.trim().toLowerCase())}`
     : null;
+
+  const womenCategories = categories.filter((cat) => cat.gender === "k");
+  const menCategories = categories.filter((cat) => cat.gender === "e");
 
   return (
     <header className="font-display">
@@ -53,11 +70,54 @@ export default function Header() {
             <li>
               <NavLink to="/">Home</NavLink>
             </li>
-            <li className="font-medium text-[#252B42] cursor-pointer ">
-              <NavLink to="/shop">
-                Shop
-                <i className="fas fa-chevron-down fa-xs pl-2 "></i>
-              </NavLink>
+            <li className="relative font-medium text-[#252B42]">
+              <NavLink to="/shop">Shop</NavLink>
+              <i
+                className={`fas fa-chevron-${
+                  shopMenuOpen ? "up" : "down"
+                } fa-xs pl-2 cursor-pointer`}
+                onClick={toggleShopMenu}
+              ></i>
+              {shopMenuOpen && (
+                <div className="absolute  mt-2 shadow-md bg-white flex gap-4 justify-between p-4 z-10">
+                  <div className="">
+                    <h3 className="font-bold mb-4 text-second-text-color">
+                      Kadın
+                    </h3>
+                    <ul className="flex flex-col gap-2 text-sm text-second-text-color">
+                      {womenCategories.map((cat) => (
+                        <li key={cat.id}>
+                          <NavLink
+                            to={`/shop/kadin/${convertToEnglishChars(
+                              cat.code.substring(2)
+                            )}`}
+                          >
+                            {cat.title}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-4 text-second-text-color">
+                      Erkek
+                    </h3>
+                    <ul className="flex flex-col gap-2 text-sm text-second-text-color">
+                      {menCategories.map((cat) => (
+                        <li key={cat.id}>
+                          <NavLink
+                            to={`/shop/erkek/${convertToEnglishChars(
+                              cat.code.substring(2)
+                            )}`}
+                          >
+                            {cat.title}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </li>
             <li>
               <NavLink to="/about">About</NavLink>

@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import ProductPost from "../components/ProductPost";
-import { products } from "../data/products";
 import { posts } from "../data/posts";
-import { logos } from "../data/logos";
 import HomePageSlider from "../components/HomePageSlider";
 import PartnerLogos from "../components/PartnerLogos";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/actions/thunkActions";
+import Spinner from "../components/Spinner";
 
 export default function Home() {
   const [displayedProductCount, setDisplayedProductCount] = useState(5);
+  const dispatch = useDispatch();
+
+  const topProducts = useSelector((state) => state.product.productList)
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 10);
+  console.log(topProducts);
+  const fetchState = useSelector((state) => state.product.fetchState);
 
   const handleResize = () => {
     if (window.innerWidth >= 768) {
-      setDisplayedProductCount(products.length);
+      setDisplayedProductCount(topProducts.length);
     } else {
       setDisplayedProductCount(5);
     }
@@ -24,7 +32,11 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const displayedProducts = products.slice(0, displayedProductCount);
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  const displayedProducts = topProducts.slice(0, displayedProductCount);
 
   return (
     <div className="font-display">
@@ -75,17 +87,14 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="product-cards flex flex-col max-md:gap-12 md:w-5/6 md:flex-row justify-center flex-wrap ">
-          {displayedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              imageSrc={product.imgSrc}
-              title={product.title}
-              department={product.department}
-              oldPrice={product.oldPrice}
-              newPrice={product.newPrice}
-            />
-          ))}
+        <div className="product-cards flex flex-col max-md:gap-12 md:w-5/6 md:flex-row justify-center flex-wrap max-md:w-4/5">
+          {fetchState === "FETCHED" ? (
+            displayedProducts.map((product) => (
+              <ProductCard product={product} />
+            ))
+          ) : (
+            <Spinner />
+          )}
         </div>
         <button className="text-[#23A6F0] text-sm font-bold py-3 px-8 bg-white rounded-[4px] border border-[#23A6F0] max-w-96">
           LOAD MORE PRODUCTS

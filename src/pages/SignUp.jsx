@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRoles } from "../redux/actions/thunkActions";
+import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   const {
@@ -236,6 +237,18 @@ const SignupForm = () => {
         {submitError && (
           <span className="text-danger-text-color text-sm">{submitError}</span>
         )}
+
+        <div className="mt-4 text-center">
+          <span className="text-sm text-gray-600">
+            Already have an account?{" "}
+          </span>
+          <Link
+            to="/login"
+            className="text-sm text-primary-color hover:underline"
+          >
+            Login here
+          </Link>
+        </div>
       </form>
     </div>
   );

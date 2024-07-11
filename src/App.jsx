@@ -11,8 +11,24 @@ import SignUp from "./pages/SignUp";
 import LoginForm from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { verifyToken } from "./redux/actions/thunkActions";
+import { useHistory } from "react-router-dom";
 
 function App() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      history.push("/login");
+    } else {
+      dispatch(verifyToken(history));
+    }
+  }, [token, history, dispatch]);
+
   return (
     <>
       <Header />
