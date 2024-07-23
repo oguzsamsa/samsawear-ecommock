@@ -13,7 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { verifyToken } from "./redux/actions/thunkActions";
+import { fetchProducts, verifyToken } from "./redux/actions/thunkActions";
 import { useHistory } from "react-router-dom";
 
 function App() {
@@ -26,6 +26,7 @@ function App() {
       history.push("/login");
     } else {
       dispatch(verifyToken(history));
+      dispatch(fetchProducts());
     }
   }, [token, history, dispatch]);
 

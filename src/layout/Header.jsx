@@ -11,7 +11,6 @@ export default function Header() {
   const [shopMenuOpen, setShopMenuOpen] = useState(false);
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.category.categories);
-  console.log(categories, "dfdlsdkfds");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -87,11 +86,7 @@ export default function Header() {
                     <ul className="flex flex-col gap-2 text-sm text-second-text-color">
                       {womenCategories.map((cat) => (
                         <li key={cat.id}>
-                          <NavLink
-                            to={`/shop/kadin/${convertToEnglishChars(
-                              cat.code.substring(2)
-                            )}`}
-                          >
+                          <NavLink to={`/shop?category=${cat.id}`}>
                             {cat.title}
                           </NavLink>
                         </li>
@@ -105,11 +100,7 @@ export default function Header() {
                     <ul className="flex flex-col gap-2 text-sm text-second-text-color">
                       {menCategories.map((cat) => (
                         <li key={cat.id}>
-                          <NavLink
-                            to={`/shop/erkek/${convertToEnglishChars(
-                              cat.code.substring(2)
-                            )}`}
-                          >
+                          <NavLink to={`/shop?category=${cat.id}`}>
                             {cat.title}
                           </NavLink>
                         </li>

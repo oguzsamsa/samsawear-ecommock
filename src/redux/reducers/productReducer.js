@@ -6,15 +6,20 @@ import {
     SET_LIMIT,
     SET_OFFSET,
     SET_FILTER,
+    SET_SORT,
+    SET_CATEGORY_ID,
+    SET_FILTER_TEXT,
   } from '../actions/actionTypes';
   
   const initialState = {
     categories: [],
     productList: [],
     total: 0,
-    limit: 50,
+    limit: 25,
     offset: 0,
-    filter: '',
+    sort: '',
+    categoryId: '',
+    filterText: '',
     fetchState: 'NOT_FETCHED',
   };
   
@@ -34,6 +39,12 @@ import {
         return { ...state, offset: action.payload };
       case SET_FILTER:
         return { ...state, filter: action.payload };
+      case SET_SORT:
+        return { ...state, sort: action.payload};
+      case SET_CATEGORY_ID:
+        return { ...state, categoryId: action.payload };
+      case SET_FILTER_TEXT:
+        return { ...state, filterText: action.payload };
       default:
         return state;
     }

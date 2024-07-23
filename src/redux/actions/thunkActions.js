@@ -33,6 +33,7 @@ export const login = (email, password, rememberMe) => {
 
             if (rememberMe) {
                 localStorage.setItem("token", userData.token);
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
             }
 
             toast.success("Login successful!");
@@ -45,25 +46,25 @@ export const login = (email, password, rememberMe) => {
 
 export const verifyToken = (history) => {
     return async (dispatch) => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            axiosInstance.defaults.headers.common["Authorization"] = token;
+
+
+        }
         
         try {
             const response = await axiosInstance.get("/verify");
             const user = response.data;
-
             dispatch(setUser(user));
+            localStorage.setItem("token", user.token);
+            axiosInstance.defaults.headers["Authorization"] = user.token
 
-            // Yeni token'i localStorage'a ve axios header'ına ekleyin
-            localStorage.setItem("token", response.headers["authorization"]);
-            axiosInstance.defaults.headers["Authorization"] = response.headers["authorization"];
-
-            toast.success("Token verified successfully!");
         } catch (error) {
             console.error("Token verification failed:", error);
-            // Token geçerli değilse localStorage'dan ve axios header'ından token'i silin
             localStorage.removeItem("token");
             delete axiosInstance.defaults.headers["Authorization"];
-            toast.error("Token verification failed. Please login again.");
-
             history.push("/login")
         }
     };
@@ -83,17 +84,24 @@ export const fetchCategories = () => {
 }
 
 export const fetchProducts = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const state = getState().product;
+        const { categoryId, sort, filterText, limit, offset } = state;
         dispatch(setFetchState('FETCHING'));
 
         try {
-            const response = await axiosInstance.get('/products');
-            const {total, products} = response.data;
+            let query = `limit=${limit}&offset=${offset}`;
+            if (categoryId) query += `&category=${categoryId}`;
+            if (filterText) query += `&filter=${filterText}`;
+            if (sort) query += `&sort=${sort}`;
+
+            const response = await axiosInstance.get(`/products?${query}`);
+            const { total, products } = response.data;
             dispatch(setProductList(products));
             dispatch(setTotal(total));
             dispatch(setFetchState('FETCHED'));
 
-        } catch(error){
+        } catch (error) {
             console.error("Failed to fetch products: ", error);
             dispatch(setFetchState('FETCH_ERROR'));
         }

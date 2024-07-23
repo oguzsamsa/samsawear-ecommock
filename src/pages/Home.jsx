@@ -10,12 +10,9 @@ import Spinner from "../components/Spinner";
 
 export default function Home() {
   const [displayedProductCount, setDisplayedProductCount] = useState(5);
+  const [topProducts, setTopProducts] = useState([]);
   const dispatch = useDispatch();
-
-  const topProducts = useSelector((state) => state.product.productList)
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 10);
-  console.log(topProducts);
+  const productList = useSelector((state) => state.product.productList);
   const fetchState = useSelector((state) => state.product.fetchState);
 
   const handleResize = () => {
@@ -30,11 +27,20 @@ export default function Home() {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [topProducts]);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (fetchState === "FETCHED") {
+      const sortedProducts = productList
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 10);
+      setTopProducts(sortedProducts);
+    }
+  }, [fetchState, productList]);
 
   const displayedProducts = topProducts.slice(0, displayedProductCount);
 

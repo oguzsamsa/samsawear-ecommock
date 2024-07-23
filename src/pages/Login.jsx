@@ -16,9 +16,7 @@ const LoginForm = () => {
 
   const onSubmit = async (formData) => {
     try {
-      await dispatch(
-        login(formData.email, formData.password, formData.rememberMe)
-      );
+      dispatch(login(formData.email, formData.password, formData.rememberMe));
       history.goBack();
     } catch (error) {
       setSubmitError(error.message);

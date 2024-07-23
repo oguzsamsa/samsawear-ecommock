@@ -6,6 +6,9 @@ import {
     SET_LIMIT,
     SET_OFFSET,
     SET_FILTER,
+    SET_SORT,
+    SET_CATEGORY_ID,
+    SET_FILTER_TEXT,
   } from './actionTypes';
   
   export const setCategories = (categories) => ({
@@ -43,3 +46,17 @@ import {
     payload: filter,
   });
   
+  export const setSort = (sort) => ({
+    type: SET_SORT,
+    payload: sort,
+  });
+  
+  export const setCategoryId = (categoryId) => ({
+    type: SET_CATEGORY_ID,
+    payload: categoryId,
+  });
+  
+  export const setFilterText = (filterText) => ({
+    type: SET_FILTER_TEXT,
+    payload: filterText,
+  });
