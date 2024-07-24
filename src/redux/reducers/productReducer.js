@@ -13,6 +13,7 @@ import {
   
   const initialState = {
     categories: [],
+    productsById: {},
     productList: [],
     total: 0,
     limit: 25,

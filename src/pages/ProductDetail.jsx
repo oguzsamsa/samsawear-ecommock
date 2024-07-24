@@ -1,17 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { products } from "../data/products";
 import ProductCard from "../components/ProductCard";
-import { logos } from "../data/logos";
 import PartnerLogos from "../components/PartnerLogos";
-
-const images = [
-  "../../assets/product-detail-page/carousel-item.png",
-  "../../assets/product-detail-page/carouselCaptions.png",
-];
+import { useParams } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/actions/thunkActions";
+import Spinner from "../components/Spinner";
 
 export default function ProductDetail() {
+  const { productId } = useParams();
+  const [product, setProduct] = useState({}); // Başlangıçta boş nesne
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [displayedProductCount, setDisplayedProductCount] = useState(4);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axiosInstance.get(`/products/${productId}`);
+        setProduct(response.data);
+      } catch (error) {
+        console.error("Couldn't fetch product.", error);
+      }
+    };
+    fetchProduct();
+  }, [productId]);
+
+  const [topProducts, setTopProducts] = useState([]);
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.product.productList);
+  const fetchState = useSelector((state) => state.product.fetchState);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (fetchState === "FETCHED") {
+      const sortedProducts = productList
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 10);
+      setTopProducts(sortedProducts);
+    }
+  }, [fetchState, productList]);
+
+  const displayedProducts = topProducts.slice(0, displayedProductCount);
+
+  // Güvenli erişim
+  const images =
+    product.images && product.images.length > 0
+      ? [product.images[0].url, product.images[0].url]
+      : [];
 
   const handlePrevClick = () => {
     const newIndex = (currentImageIndex - 1 + images.length) % images.length;
@@ -29,7 +67,7 @@ export default function ProductDetail() {
 
   const handleResize = () => {
     if (window.innerWidth >= 768) {
-      setDisplayedProductCount(products.length);
+      setDisplayedProductCount(productList.length);
     } else {
       setDisplayedProductCount(4);
     }
@@ -41,7 +79,11 @@ export default function ProductDetail() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const displayedProducts = products.slice(0, displayedProductCount);
+  if (!product.name) {
+    return <div>Yükleniyor...</div>;
+  }
+
+  console.log(displayedProducts, "displayedproductsss");
 
   return (
     <div className="font-display">
@@ -57,7 +99,7 @@ export default function ProductDetail() {
             <div className="relative">
               <img
                 id="mainImage"
-                src={images[currentImageIndex]}
+                src={images[currentImageIndex] || ""}
                 alt="Main Image"
                 className="w-full h-auto"
               />
@@ -89,31 +131,32 @@ export default function ProductDetail() {
             </div>
           </div>
           <div className="flex flex-col gap-4 p-4 md:w-3/5">
-            <h1 className="text-xl text-text-color mb-1">Floating Phone</h1>
+            <h1 className="text-xl text-text-color mb-1">{product.name}</h1>
             <div className="flex items-center gap-2">
               <div className="flex text-[#F3CD03] gap-1">
-                <i class="fa-solid fa-star ]"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-regular fa-star"></i>
+                <i className="fa-solid fa-star"></i>
+                <i className="fa-solid fa-star"></i>
+                <i className="fa-solid fa-star"></i>
+                <i className="fa-solid fa-star"></i>
+                <i className="fa-regular fa-star"></i>
               </div>
               <p className="text-second-text-color font-bold text-sm">
-                10 Reviews
+                Rating: {product.rating}
               </p>
             </div>
-            <p className="text-text-color font-bold text-2xl">$1,139.33</p>
+            <p className="text-text-color font-bold text-2xl">
+              ${product.price}
+            </p>
             <div className="flex gap-2 -mt-3">
               <p className="font-bold text-sm text-second-text-color">
-                Availability :{" "}
+                Stock :{" "}
               </p>
-              <p className="font-bold text-sm text-primary-color"> In Stock</p>
+              <p className="font-bold text-sm text-primary-color">
+                {" "}
+                {product.stock}
+              </p>
             </div>
-            <p className="text-sm text-[#858585]">
-              Met minim Mollie non desert Alamo est sit cliquey dolor do met
-              sent. RELIT official consequent door ENIM RELIT Mollie. Excitation
-              venial consequent sent nostrum met.
-            </p>
+            <p className="text-sm text-[#858585]">{product.description}</p>
             <hr className="font-bold" />
             <div className="flex gap-2 mb-6">
               <div className=" w-8 h-8 rounded-full bg-primary-color"></div>
@@ -126,13 +169,13 @@ export default function ProductDetail() {
                 Select Options
               </button>
               <button>
-                <i class="fa-regular fa-heart bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
+                <i className="fa-regular fa-heart bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
               </button>
               <button>
-                <i class="fa-solid fa-cart-shopping bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
+                <i className="fa-solid fa-cart-shopping bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
               </button>
               <button>
-                <i class="fa-solid fa-eye bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
+                <i className="fa-solid fa-eye bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
               </button>
             </div>
           </div>
@@ -181,20 +224,20 @@ export default function ProductDetail() {
               </h1>
               <ul className="flex flex-col gap-2 text-second-text-color text-sm font-bold">
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
               </ul>
             </div>
@@ -204,16 +247,16 @@ export default function ProductDetail() {
               </h1>
               <ul className="flex flex-col gap-2 text-second-text-color text-sm font-bold">
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
                 <li className="flex items-center gap-2">
-                  <i class="fa-solid fa-chevron-right"></i> the quick fox jumps
-                  over the lazy dog
+                  <i className="fa-solid fa-chevron-right"></i> the quick fox
+                  jumps over the lazy dog
                 </li>
               </ul>
             </div>
@@ -227,16 +270,13 @@ export default function ProductDetail() {
           </h1>
           <hr className="border-t-2 border-[#ECECEC] w-4/5 max-md:max-w-xs md:w-full" />
           <div className="flex flex-col items-center max-md:gap-8 md:flex-row md:flex-wrap md:justify-center">
-            {displayedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                imageSrc={product.imgSrc}
-                title={product.title}
-                department={product.department}
-                oldPrice={product.oldPrice}
-                newPrice={product.newPrice}
-              />
-            ))}
+            {fetchState === "FETCHED" ? (
+              displayedProducts.map((product) => (
+                <ProductCard product={product} key={product.id} />
+              ))
+            ) : (
+              <Spinner />
+            )}
           </div>
         </div>
       </div>
