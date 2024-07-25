@@ -6,6 +6,7 @@ import axiosInstance from "../axios/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../redux/actions/thunkActions";
 import Spinner from "../components/Spinner";
+import { addToCart } from "../redux/actions/shoppingCartActions";
 
 export default function ProductDetail() {
   const { productId } = useParams();
@@ -84,6 +85,10 @@ export default function ProductDetail() {
   }
 
   console.log(displayedProducts, "displayedproductsss");
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
+  };
 
   return (
     <div className="font-display">
@@ -165,8 +170,11 @@ export default function ProductDetail() {
               <div className=" w-8 h-8 rounded-full bg-text-color"></div>
             </div>
             <div className="flex gap-2">
-              <button className="text-white bg-primary-color px-3 py-3 rounded-md">
-                Select Options
+              <button
+                onClick={handleAddToCart}
+                className="text-white bg-primary-color px-3 py-3 rounded-md"
+              >
+                Add to cart
               </button>
               <button>
                 <i className="fa-regular fa-heart bg-white border border-[#E8E8E8] p-2 rounded-full"></i>
