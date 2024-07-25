@@ -1,4 +1,4 @@
-import { SET_CART, SET_PAYMENT, SET_ADDRESS, ADD_TO_CART, TOGGLE_CART_DROPDOWN } from './actionTypes';
+import { SET_CART, SET_PAYMENT, SET_ADDRESS, ADD_TO_CART, TOGGLE_CART_DROPDOWN, CART_QUANTITY_INCREASE, CART_QUANTITY_DECREASE } from './actionTypes';
 
 export const setCart = (cart) => ({
   type: SET_CART,
@@ -24,3 +24,13 @@ export const addToCart = (product) => ({
 export const toggleCartDropdown = () => ({
   type: TOGGLE_CART_DROPDOWN
 });
+
+export const cartQuantityIncrease = (productId) => ({
+  type: CART_QUANTITY_INCREASE,
+  payload: productId
+})
+
+export const cartQuantityDecrease = (productId) => ({
+  type: CART_QUANTITY_DECREASE,
+  payload: productId
+})
