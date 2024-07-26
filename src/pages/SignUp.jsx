@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRoles } from "../redux/actions/thunkActions";
+import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   const {
@@ -10,22 +13,14 @@ const SignupForm = () => {
     watch,
     formState: { errors, isSubmitting },
   } = useForm();
-  const [roles, setRoles] = useState([]);
   const [submitError, setSubmitError] = useState("");
   const history = useHistory();
+  const dispatch = useDispatch();
+  const roles = useSelector((state) => state.client.roles);
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axiosInstance.get("/roles");
-        setRoles(response.data.reverse());
-      } catch (error) {
-        console.error("Couldn't get the roles:", error);
-      }
-    };
-
-    fetchRoles();
-  }, []);
+    dispatch(fetchRoles());
+  }, [dispatch]);
 
   const onSubmit = async (formData) => {
     try {
@@ -62,12 +57,17 @@ const SignupForm = () => {
 
   return (
     <div className="font-display flex flex-col md:flex-row items-center justify-center md:py-12">
-      <div className="w-3/4 md:w-1/3 mx-auto mb-4">
+      <div className="w-3/4 md:w-1/3 mx-auto mb-4 flex flex-col items-center">
         <h2 className="text-2xl font-bold text-center mb-4">Register</h2>
         <p className="text-center text-gray-600 ">
           Welcome to our e-commerce platform. Register now to start shopping
           with exclusive offers and deals!
         </p>
+        <img
+          src="../../assets/about-page/about-page-hero.png"
+          alt=""
+          className="max-md:hidden"
+        />
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -237,6 +237,18 @@ const SignupForm = () => {
         {submitError && (
           <span className="text-danger-text-color text-sm">{submitError}</span>
         )}
+
+        <div className="mt-4 text-center">
+          <span className="text-sm text-gray-600">
+            Already have an account?{" "}
+          </span>
+          <Link
+            to="/login"
+            className="text-sm text-primary-color hover:underline"
+          >
+            Login here
+          </Link>
+        </div>
       </form>
     </div>
   );

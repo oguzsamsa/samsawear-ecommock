@@ -1,9 +1,26 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import md5 from "md5";
+import { fetchCategories } from "../redux/actions/thunkActions";
+import { toggleCartDropdown } from "../redux/actions/shoppingCartActions";
+import ShoppingCartDropdown from "../components/ShoppingCartDropdown";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [shopMenuOpen, setShopMenuOpen] = useState(false);
+  const user = useSelector((state) => state.client.user);
+  const categories = useSelector((state) => state.category.categories);
+  const cart = useSelector((state) => state.shoppingCart.cart);
+  const isDropdownOpen = useSelector(
+    (state) => state.shoppingCart.isDropdownOpen
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -12,6 +29,21 @@ export default function Header() {
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
   };
+
+  const toggleShopMenu = () => {
+    setShopMenuOpen(!shopMenuOpen);
+  };
+
+  const toggleCartDropdownLocal = () => {
+    dispatch(toggleCartDropdown());
+  };
+
+  const gravatarUrl = user.email
+    ? `https://www.gravatar.com/avatar/${md5(user.email.trim().toLowerCase())}`
+    : null;
+
+  const womenCategories = categories.filter((cat) => cat.gender === "k");
+  const menCategories = categories.filter((cat) => cat.gender === "e");
 
   return (
     <header className="font-display">
@@ -37,7 +69,7 @@ export default function Header() {
           </div>
         </div>
       </div>
-      <div className=" w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
+      <div className="w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
         <div className="flex gap-24">
           <h6 className="font-display font-bold text-2xl">
             <NavLink to="/">Bandage</NavLink>
@@ -46,11 +78,46 @@ export default function Header() {
             <li>
               <NavLink to="/">Home</NavLink>
             </li>
-            <li className="font-medium text-[#252B42] cursor-pointer ">
-              <NavLink to="/shop">
-                Shop
-                <i className="fas fa-chevron-down fa-xs pl-2 "></i>
-              </NavLink>
+            <li className="relative font-medium text-[#252B42]">
+              <NavLink to="/shop">Shop</NavLink>
+              <i
+                className={`fas fa-chevron-${
+                  shopMenuOpen ? "up" : "down"
+                } fa-xs pl-2 cursor-pointer`}
+                onClick={toggleShopMenu}
+              ></i>
+              {shopMenuOpen && (
+                <div className="absolute  mt-2 shadow-md bg-white flex gap-4 justify-between p-4 z-10">
+                  <div className="">
+                    <h3 className="font-bold mb-4 text-second-text-color">
+                      Kadın
+                    </h3>
+                    <ul className="flex flex-col gap-2 text-sm text-second-text-color">
+                      {womenCategories.map((cat) => (
+                        <li key={cat.id}>
+                          <NavLink to={`/shop?category=${cat.id}`}>
+                            {cat.title}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-4 text-second-text-color">
+                      Erkek
+                    </h3>
+                    <ul className="flex flex-col gap-2 text-sm text-second-text-color">
+                      {menCategories.map((cat) => (
+                        <li key={cat.id}>
+                          <NavLink to={`/shop?category=${cat.id}`}>
+                            {cat.title}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </li>
             <li>
               <NavLink to="/about">About</NavLink>
@@ -67,18 +134,31 @@ export default function Header() {
         <div className="flex gap-6 items-center md:text-[#23A6F0] relative">
           <div className="flex items-center gap-1">
             <i
-              className="fas fa-user fa-lg cursor-pointer"
+              className={`fas fa-user fa-lg cursor-pointer ${
+                user.email ? "hidden" : ""
+              }`}
               onClick={toggleUserMenu}
             ></i>
-            <p className="font-bold hidden lg:block">
-              Login /{" "}
-              <span>
-                <NavLink to="/signup">Register</NavLink>
-              </span>
-            </p>
+            {user.email ? (
+              <div className="flex items-center gap-2">
+                <img
+                  src={gravatarUrl}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full"
+                />
+                <p className="font-bold hidden lg:block">{user.name}</p>
+              </div>
+            ) : (
+              <p className="font-bold hidden lg:block">
+                <NavLink to="/login">Login</NavLink> /{" "}
+                <span>
+                  <NavLink to="/signup">Register</NavLink>
+                </span>
+              </p>
+            )}
           </div>
-          {userMenuOpen && (
-            <div className="absolute top-12 right-14 bg-white shadow-md rounded-md p-4 z-10">
+          {userMenuOpen && !user.email && (
+            <div className="absolute top-12 right-14 bg-white shadow-md rounded-md p-4 z-10 lg:hidden">
               <NavLink
                 to="/login"
                 className="block text-text-color font-bold py-1"
@@ -94,9 +174,15 @@ export default function Header() {
             </div>
           )}
           <i className="fas fa-search fa-lg"></i>
-          <div className="flex items-center gap-1">
-            <i className="fas fa-shopping-cart fa-lg"></i>
-            <p className="hidden lg:block">1</p>
+          <div className="relative">
+            <div
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={toggleCartDropdownLocal}
+            >
+              <i className="fas fa-shopping-cart fa-lg"></i>
+              <p className="hidden lg:block">{cart.length}</p>
+            </div>
+            {isDropdownOpen && <ShoppingCartDropdown cart={cart} />}
           </div>
           <i
             className="fas fa-bars fa-lg lg:hidden cursor-pointer"
