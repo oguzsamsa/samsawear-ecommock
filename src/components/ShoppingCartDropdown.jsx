@@ -3,6 +3,7 @@ import {
   cartQuantityDecrease,
   cartQuantityIncrease,
 } from "../redux/actions/shoppingCartActions";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 export default function ShoppingCartDropdown({ cart }) {
   const dispatch = useDispatch();
@@ -72,9 +73,11 @@ export default function ShoppingCartDropdown({ cart }) {
         <p className="font-bold">${totalPrice.toFixed(2)}</p>
       </div>
       <div className="mt-4 flex justify-between border-t border-gray-300 pt-2">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
-          Go to Cart
-        </button>
+        <Link to="/shopping-cart">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded">
+            Go to Cart
+          </button>
+        </Link>
         <button className="bg-green-500 text-white px-4 py-2 rounded">
           Checkout
         </button>

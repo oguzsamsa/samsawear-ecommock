@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchProducts, verifyToken } from "./redux/actions/thunkActions";
 import { useHistory } from "react-router-dom";
+import ShoppingCart from "./pages/ShoppingCart";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,14 +48,19 @@ function App() {
         <Route path="/login">
           <LoginForm />
         </Route>
-        <Route path="/signup">
-          <SignUp />
-        </Route>
         <Route exact path="/shop">
           <Shop />
         </Route>
+
         <Route path="/shop/product-detail/:categoryId/:productId/:name">
           <ProductDetail />
+        </Route>
+
+        <Route path="/shopping-cart">
+          <ShoppingCart />
+        </Route>
+        <Route path="/signup">
+          <SignUp />
         </Route>
         <Route path="/team">
           <Team />
