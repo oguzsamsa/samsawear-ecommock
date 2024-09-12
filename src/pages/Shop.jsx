@@ -7,6 +7,7 @@ import Spinner from "../components/Spinner";
 import {
   setCategoryId,
   setFilterText,
+  setLimit,
   setOffset,
   setSort,
 } from "../redux/actions/productActions";
@@ -33,7 +34,6 @@ export default function Shop() {
     const filter = queryParams.get("filter");
     const page = queryParams.get("page");
 
-    // URL sadece /shop ise tüm filtreleme ve sayfalama ayarlarını sıfırlayın
     if (!category && !sort && !filter && !page) {
       dispatch(setCategoryId(""));
       dispatch(setSort(""));
@@ -64,27 +64,17 @@ export default function Shop() {
     }
 
     dispatch(fetchProducts());
-  }, [location.search, dispatch]);
+  }, [location.search, dispatch, limit]);
 
-  useEffect(() => {
-    if (window.innerWidth >= 768) {
-      setDisplayedProductCount(productList.length);
-    } else {
-      setDisplayedProductCount(4);
-    }
-  }, [productList]);
-
-  const handleResize = () => {
-    if (window.innerWidth >= 768) {
-      setDisplayedProductCount(productList.length);
-    } else {
-      setDisplayedProductCount(4);
-    }
+  const updateLimit = () => {
+    const newLimit = window.innerWidth >= 768 ? 25 : 6;
+    dispatch(setLimit(newLimit));
   };
 
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    updateLimit();
+    window.addEventListener("resize", updateLimit); // Ekran boyutu değiştiğinde limiti güncelle
+    return () => window.removeEventListener("resize", updateLimit);
   }, []);
 
   const handleSortChange = (e) => {
@@ -235,56 +225,60 @@ export default function Shop() {
             Showing {startItem} - {endItem} of {total} results
           </h1>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Filter"
-              value={localFilterText}
-              onChange={handleFilterChange}
-              className="flex items-center gap-2 py-2 px-4 bg-[#F9F9F9] text-second-text-color text-sm border rounded-[4px]"
-            />
-            <select
-              value={localCategoryId}
-              onChange={handleCategoryChange}
-              className="flex items-center gap-2 py-2 px-4 bg-[#F9F9F9] text-second-text-color text-sm border rounded-[4px]"
-            >
-              <option value="">Select Category</option>
-              <optgroup label="Kadın">
-                {categories
-                  .filter((cat) => cat.gender === "k")
-                  .map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.title}
-                    </option>
-                  ))}
-              </optgroup>
-              <optgroup label="Erkek">
-                {categories
-                  .filter((cat) => cat.gender === "e")
-                  .map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.title}
-                    </option>
-                  ))}
-              </optgroup>
-            </select>
-            <select
-              value={localSort}
-              onChange={handleSortChange}
-              className="flex items-center gap-2 py-2 px-4 bg-[#F9F9F9] text-second-text-color text-sm border rounded-[4px]"
-            >
-              <option value="">Select Sort</option>
-              <option value="price:asc">Price Ascending</option>
-              <option value="price:desc">Price Descending</option>
-              <option value="rating:asc">Rating Ascending</option>
-              <option value="rating:desc">Rating Descending</option>
-            </select>
-            <button
-              className="text-white bg-primary-color py-2 px-4 text-sm font-bold rounded-[4px]"
-              onClick={handleFilterSubmit}
-            >
-              Filter
-            </button>
+          <div className="flex gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row">
+              <input
+                type="text"
+                placeholder="Filter"
+                value={localFilterText}
+                onChange={handleFilterChange}
+                className="flex items-center gap-2 py-2 px-4 bg-[#F9F9F9] text-second-text-color text-sm border rounded-[4px]"
+              />
+              <select
+                value={localCategoryId}
+                onChange={handleCategoryChange}
+                className="flex items-center gap-2 py-2 px-4 bg-[#F9F9F9] text-second-text-color text-sm border rounded-[4px]"
+              >
+                <option value="">Select Category</option>
+                <optgroup label="Kadın">
+                  {categories
+                    .filter((cat) => cat.gender === "k")
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.title}
+                      </option>
+                    ))}
+                </optgroup>
+                <optgroup label="Erkek">
+                  {categories
+                    .filter((cat) => cat.gender === "e")
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.title}
+                      </option>
+                    ))}
+                </optgroup>
+              </select>
+            </div>
+            <div className="flex flex-col gap-4 lg:flex-row">
+              <select
+                value={localSort}
+                onChange={handleSortChange}
+                className="flex items-center gap-2 py-2 px-4 bg-[#F9F9F9] text-second-text-color text-sm border rounded-[4px]"
+              >
+                <option value="">Select Sort</option>
+                <option value="price:asc">Price Ascending</option>
+                <option value="price:desc">Price Descending</option>
+                <option value="rating:asc">Rating Ascending</option>
+                <option value="rating:desc">Rating Descending</option>
+              </select>
+              <button
+                className="text-white bg-primary-color py-2 px-8 text-sm font-bold rounded-[4px]"
+                onClick={handleFilterSubmit}
+              >
+                Filter
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -292,7 +286,7 @@ export default function Shop() {
       <div className="flex flex-col items-center gap-8 py-16  md:w-11/12 md:justify-center md:mx-auto">
         <div className="product-cards flex flex-col max-md:gap-12 md:flex-row justify-center flex-wrap max-md:w-4/5">
           {fetchState === "FETCHED" ? (
-            displayedProducts.map((product) => (
+            productList.map((product) => (
               <ProductCard product={product} key={product.id} />
             ))
           ) : (
