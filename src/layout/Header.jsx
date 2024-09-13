@@ -16,6 +16,22 @@ export default function Header() {
   const isDropdownOpen = useSelector(
     (state) => state.shoppingCart.isDropdownOpen
   );
+
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutId) clearTimeout(timeoutId);
+    setIsDropdownVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    const id = setTimeout(() => {
+      setIsDropdownVisible(false);
+    }, 200);
+    setTimeoutId(id);
+  };
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -174,7 +190,11 @@ export default function Header() {
             </div>
           )}
           <i className="fas fa-search fa-lg"></i>
-          <div className="relative">
+          <div
+            className="relative"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <div
               className="flex items-center gap-1 cursor-pointer"
               onClick={toggleCartDropdownLocal}
@@ -182,7 +202,7 @@ export default function Header() {
               <i className="fas fa-shopping-cart fa-lg"></i>
               <p className="hidden lg:block">{cart.length}</p>
             </div>
-            {isDropdownOpen && <ShoppingCartDropdown cart={cart} />}
+            {isDropdownVisible && <ShoppingCartDropdown cart={cart} />}
           </div>
           <i
             className="fas fa-bars fa-lg lg:hidden cursor-pointer"

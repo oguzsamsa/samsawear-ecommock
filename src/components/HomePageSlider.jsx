@@ -15,7 +15,7 @@ const slides = [
     title: "AUTUMN 2024",
     headline: "NEW ARRIVALS",
     description: "Discover the latest trends and styles for the autumn season.",
-    imgSrc: "./../../assets/homepage/homepage-header-mobile-hero.png",
+    imgSrc: "./../../assets/homepage/shop-hero-1-product-slide-1.jpg",
   },
 ];
 
@@ -49,13 +49,19 @@ const HomePageSlider = () => {
   }, []);
 
   return (
-    <div className="relative max-md:overflow-hidden w-11/12 lg:w-[87%] bg-gradient-to-r from-[#96E9FB] to-[#ABECD6] h-[700px] md:h-[619px] mx-auto rounded-xl mt-6 flex flex-col md:flex-row md:items-center pt-12 md:pt-0">
+    <div
+      className={
+        currentSlide === 0
+          ? "relative max-md:overflow-hidden w-11/12 lg:w-[87%] bg-gradient-to-r from-[#96E9FB] to-[#ABECD6] h-[700px] md:h-[619px] mx-auto rounded-xl mt-6 flex flex-col md:flex-row md:items-center pt-12 md:pt-0"
+          : `bg-[url('${slides[1].imgSrc}')] bg-cover bg-center max-md:bg-[center_right_-29rem] relative max-md:overflow-hidden w-11/12 lg:w-[87%]  h-[700px] md:h-[619px] mx-auto rounded-xl mt-6 flex flex-col md:flex-row md:items-center pt-12 md:pt-0`
+      }
+    >
       {slides.map((slide, index) => (
         <div
           key={slide.id}
           className={`flex flex-col text-center items-center md:items-start md:text-start md:w-full md:pl-12 md:-mt-16  gap-6 ${
             index === currentSlide ? "block" : "hidden"
-          }`}
+          } ${currentSlide !== 0 ? "max-md:pt-36" : ""}`}
         >
           <p className="font-bold text-base text-[#2A7CC7]">{slide.title}</p>
           <h1 className="font-bold text-[40px] md:text-[58px] text-[#252B42] md:w-full leading-tight">
@@ -72,12 +78,20 @@ const HomePageSlider = () => {
       <img
         src={slides[currentSlide].imgSrc}
         alt=""
-        className="w-full absolute -bottom-8 max-md:-left-8 z-10 md:-right-10 lg:-right-20 md:bottom-0 md:w-1/2 lg:w-1/2"
+        className={`${
+          currentSlide === 0
+            ? "w-full absolute -bottom-8 max-md:-left-8 z-10 md:-right-10 lg:-right-20 md:bottom-0 md:w-1/2 lg:w-1/2"
+            : "hidden"
+        }`}
       />
-      <div className="w-[47px] h-[47px] md:h-16 md:w-16 lg:w-[80px] lg:h-[80px] rounded-full bg-white absolute max-md:bottom-60 md:bottom-44 md:right-72 lg:top-0 lg:right-[470px]"></div>
-      <div className="w-[250px] h-[250px] xl:w-[400px] xl:h-[400px] rounded-full bg-white absolute max-md:bottom-[47px] max-md:left-[37px] md:right-5 md:bottom-10 lg:-right-3 lg:-top-3"></div>
-      <div className="w-[18px] h-[18px] lg:w-[31px] md:w-6 md:h-6 lg:h-[31px] rounded-full bg-white absolute max-md:bottom-[160px] max-md:right-[40px] md:-right-4 md:bottom-44 lg:-right-[23px] lg:top-[280px] z-20"></div>
-      <div className="w-[9px] lg:w-[15px] lg:h-[15px] h-[9px] md:w-3 md:h-3 rounded-full bg-[#977DF4] absolute max-md:bottom-[259px] max-md:right-[26px] md:right-6 lg:-right-[47px] lg:top-[113px]"></div>
+      {currentSlide === 0 && (
+        <>
+          <div className="w-[47px] h-[47px] md:h-16 md:w-16 lg:w-[80px] lg:h-[80px] rounded-full bg-white absolute max-md:bottom-60 md:bottom-44 md:right-72 lg:top-0 lg:right-[470px]"></div>
+          <div className="w-[250px] h-[250px] xl:w-[400px] xl:h-[400px] rounded-full bg-white absolute max-md:bottom-[47px] max-md:left-[37px] md:right-5 md:bottom-10 lg:-right-3 lg:-top-3"></div>
+          <div className="w-[18px] h-[18px] lg:w-[31px] md:w-6 md:h-6 lg:h-[31px] rounded-full bg-white absolute max-md:bottom-[160px] max-md:right-[40px] md:-right-4 md:bottom-44 lg:-right-[23px] lg:top-[280px] z-20"></div>
+          <div className="w-[9px] lg:w-[15px] lg:h-[15px] h-[9px] md:w-3 md:h-3 rounded-full bg-[#977DF4] absolute max-md:bottom-[259px] max-md:right-[26px] md:right-6 lg:-right-[47px] lg:top-[113px]"></div>
+        </>
+      )}
 
       <button
         onClick={prevSlide}

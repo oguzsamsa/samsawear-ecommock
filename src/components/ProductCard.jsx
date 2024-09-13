@@ -17,10 +17,10 @@ const ProductCard = ({ product }) => {
         <img
           src={product.images[0].url}
           alt={product.name}
-          className="mb-4 object-cover bg-center w-full h-48 md:h-60 lg:h-72"
+          className="mb-4 object-cover bg-center w-full"
         />
         <h1 className="text-[#252B42] font-bold">{product.name}</h1>
-        <h2 className="text-[#737373] font-bold text-sm my-2 md:h-24 flex items-center">
+        <h2 className="text-[#737373] font-bold text-sm my-2 md:h-24 flex justify-center">
           {product.description}
         </h2>
         <div>

@@ -74,11 +74,11 @@ export default function ShoppingCartDropdown({ cart }) {
       </div>
       <div className="mt-4 flex justify-between border-t border-gray-300 pt-2">
         <Link to="/shopping-cart">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          <button className="bg-primary-color text-white px-4 py-2 rounded">
             Go to Cart
           </button>
         </Link>
-        <button className="bg-green-500 text-white px-4 py-2 rounded">
+        <button className="bg-success-text-color text-white px-4 py-2 rounded">
           Checkout
         </button>
       </div>

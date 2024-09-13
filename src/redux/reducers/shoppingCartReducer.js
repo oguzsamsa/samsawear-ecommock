@@ -1,4 +1,4 @@
-import { SET_CART, SET_PAYMENT, SET_ADDRESS, ADD_TO_CART, TOGGLE_CART_DROPDOWN, CART_QUANTITY_INCREASE, CART_QUANTITY_DECREASE } from '../actions/actionTypes';
+import { SET_CART, SET_PAYMENT, SET_ADDRESS, ADD_TO_CART, TOGGLE_CART_DROPDOWN, CART_QUANTITY_INCREASE, CART_QUANTITY_DECREASE, REMOVE_ITEM, TOGGLE_SELECT_ITEM } from '../actions/actionTypes';
 
 const initialState = {
   cart: [],
@@ -41,7 +41,7 @@ const shoppingCartReducer = (state = initialState, action) => {
           ...state,
           cart: [...state.cart, { count: 1, checked: true, product }]
         };
-      };
+      }
     case TOGGLE_CART_DROPDOWN:
       return {
         ...state,
@@ -80,6 +80,26 @@ const shoppingCartReducer = (state = initialState, action) => {
       return {
         ...state,
         cart: decreasedCart
+      };
+    case REMOVE_ITEM:
+      return {
+        ...state,
+        cart: state.cart.filter(item => item.product.id !== action.payload)
+      };
+    case TOGGLE_SELECT_ITEM:
+      const toggledCart = state.cart.map(item => {
+        if (item.product.id === action.payload) {
+          return {
+            ...item,
+            checked: !item.checked
+          };
+        }
+        return item;
+      });
+
+      return {
+        ...state,
+        cart: toggledCart
       };
     default:
       return state;
