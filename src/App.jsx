@@ -16,20 +16,25 @@ import { useEffect } from "react";
 import { fetchProducts, verifyToken } from "./redux/actions/thunkActions";
 import { useHistory } from "react-router-dom";
 import ShoppingCart from "./pages/ShoppingCart";
+import axiosInstance from "./axios/axiosInstance";
 
 function App() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const token = localStorage.getItem("token");
-
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   useEffect(() => {
     if (!token) {
+      console.log("yok");
       history.push("/login");
     } else {
       dispatch(verifyToken(history));
       dispatch(fetchProducts());
     }
   }, [token, history, dispatch]);
+
+  const address = axiosInstance.get("/user/address");
+  console.log("adresss", address);
 
   return (
     <>

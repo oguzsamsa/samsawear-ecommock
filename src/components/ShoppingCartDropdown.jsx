@@ -38,8 +38,8 @@ export default function ShoppingCartDropdown({ cart }) {
                 className="w-24 h-full object-cover"
               />
               <div className="ml-4 flex-1">
-                <p className="font-bold text-black">{item.product.name}</p>
-                <p className="text-sm text-gray-600">
+                <p className="font-bold text-text-color">{item.product.name}</p>
+                <p className="text-sm text-second-text-color">
                   {item.product.description}
                 </p>
                 <div className="flex items-center mt-2">
@@ -60,7 +60,7 @@ export default function ShoppingCartDropdown({ cart }) {
                     +
                   </button>
                 </div>
-                <p className="mt-2 font-bold">
+                <p className="mt-2 font-bold text-text-color">
                   ${(item.product.price * item.count).toFixed(2)}
                 </p>
               </div>
@@ -69,8 +69,8 @@ export default function ShoppingCartDropdown({ cart }) {
         </ul>
       )}
       <div className="px-2 pt-4 flex justify-between items-center ">
-        <p className="font-bold">Summary:</p>
-        <p className="font-bold">${totalPrice.toFixed(2)}</p>
+        <p className="font-bold text-text-color">Summary:</p>
+        <p className="font-bold text-text-color">${totalPrice.toFixed(2)}</p>
       </div>
       <div className="mt-4 flex justify-between border-t border-gray-300 pt-2">
         <Link to="/shopping-cart">

@@ -9,7 +9,6 @@ const slides = [
       "We know how large objects will act, but things on a small scale.",
     imgSrc: "./../../assets/homepage/homepage-header-mobile-hero.png",
   },
-  // Daha fazla slide buraya ekleyebilirsiniz
   {
     id: 2,
     title: "AUTUMN 2024",
@@ -53,7 +52,7 @@ const HomePageSlider = () => {
       className={
         currentSlide === 0
           ? "relative max-md:overflow-hidden w-11/12 lg:w-[87%] bg-gradient-to-r from-[#96E9FB] to-[#ABECD6] h-[700px] md:h-[619px] mx-auto rounded-xl mt-6 flex flex-col md:flex-row md:items-center pt-12 md:pt-0"
-          : `bg-[url('${slides[1].imgSrc}')] bg-cover bg-center max-md:bg-[center_right_-29rem] relative max-md:overflow-hidden w-11/12 lg:w-[87%]  h-[700px] md:h-[619px] mx-auto rounded-xl mt-6 flex flex-col md:flex-row md:items-center pt-12 md:pt-0`
+          : `bg-[url("./../../assets/homepage/shop-hero-1-product-slide-1.jpg")] bg-cover bg-center max-md:bg-[center_right_-29rem] relative max-md:overflow-hidden w-11/12 lg:w-[87%]  h-[700px] md:h-[619px] mx-auto rounded-xl mt-6 flex flex-col md:flex-row md:items-center pt-12 md:pt-0`
       }
     >
       {slides.map((slide, index) => (
@@ -110,7 +109,7 @@ const HomePageSlider = () => {
           <div
             key={idx}
             className={`w-3 h-3 rounded-full ${
-              currentSlide === idx ? "bg-[#23A6F0]" : "bg-gray-300"
+              currentSlide === idx ? "bg-[#252B42]" : "bg-gray-300"
             }`}
             onClick={() => setCurrentSlide(idx)}
           />
