@@ -1,10 +1,9 @@
-// src/redux/actions/thunkActions.js
+
 import axiosInstance from "../../axios/axiosInstance";
 import { fetchCategoriesFailure, fetchCategoriesRequest, fetchCategoriesSuccess } from "./categoryActions";
 import { setRoles, setUser } from "./clientActions";
 import { toast } from "react-toastify";
 import { setFetchState, setProductList, setTotal } from "./productActions";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 
 
@@ -34,14 +33,12 @@ export const login = (email, password, rememberMe, history) => {
 
             dispatch(setUser(userData));
 
-            // Token'ı localStorage veya sessionStorage'a kaydet
             if (rememberMe) {
                 localStorage.setItem("token", userData.token);
             } else {
                 sessionStorage.setItem("token", userData.token);
             }
 
-            // Başarılı girişten sonra yönlendirme
             history.push("/");
             toast.success("Login successful!");
         } catch (error) {
@@ -54,7 +51,6 @@ export const login = (email, password, rememberMe, history) => {
 
 export const verifyToken = (history) => {
     const localToken = localStorage.getItem("token");
-    const sessionToken = sessionStorage.getItem("token");
     return async (dispatch) => {
 
         
@@ -67,15 +63,11 @@ export const verifyToken = (history) => {
             } else {
                 sessionStorage.setItem("token", user.token);
             }
-
             history.push("/");
-            axiosInstance.defaults.headers["Authorization"] = user.token
-
         } catch (error) {
             console.error("Token verification failed:", error);
             localStorage.removeItem("token");
             sessionStorage.removeItem("token");
-            delete axiosInstance.defaults.headers["Authorization"];
             history.push("/login")
         }
     };

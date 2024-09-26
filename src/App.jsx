@@ -17,6 +17,8 @@ import { fetchProducts, verifyToken } from "./redux/actions/thunkActions";
 import { useHistory } from "react-router-dom";
 import ShoppingCart from "./pages/ShoppingCart";
 import axiosInstance from "./axios/axiosInstance";
+import PrivateRoute from "./components/PrivateRoute";
+import CreateOrderPage from "./pages/CreateOrderPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -41,35 +43,40 @@ function App() {
       <Header />
       <ToastContainer />
       <Switch>
-        <Route exact path="/">
+        <PrivateRoute exact path="/">
           <Home />
-        </Route>
-        <Route path="/about">
+        </PrivateRoute>
+
+        <PrivateRoute path="/about">
           <About />
-        </Route>
-        <Route path="/contact">
+        </PrivateRoute>
+
+        <PrivateRoute path="/contact">
           <Contact />
-        </Route>
+        </PrivateRoute>
+        <PrivateRoute path="/create-order">
+          <CreateOrderPage />
+        </PrivateRoute>
         <Route path="/login">
           <LoginForm />
         </Route>
-        <Route exact path="/shop">
+        <PrivateRoute exact path="/shop">
           <Shop />
-        </Route>
+        </PrivateRoute>
 
-        <Route path="/shop/product-detail/:categoryId/:productId/:name">
+        <PrivateRoute path="/shop/product-detail/:categoryId/:productId/:name">
           <ProductDetail />
-        </Route>
+        </PrivateRoute>
 
-        <Route path="/shopping-cart">
+        <PrivateRoute path="/shopping-cart">
           <ShoppingCart />
-        </Route>
-        <Route path="/signup">
+        </PrivateRoute>
+        <PrivateRoute path="/signup">
           <SignUp />
-        </Route>
-        <Route path="/team">
+        </PrivateRoute>
+        <PrivateRoute path="/team">
           <Team />
-        </Route>
+        </PrivateRoute>
       </Switch>
       <Footer />
     </>

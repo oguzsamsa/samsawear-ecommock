@@ -47,14 +47,14 @@ export default function ShoppingCartDropdown({ cart }) {
                     Quantity: {item.count}
                   </span>
                   <button
-                    className="px-2 py-1 mr-2 border font-bold border-second-text-color rounded text-black"
+                    className="w-8 h-8 border-2 border-primary-color rounded-full text-primary-color font-bold flex items-center justify-center mr-1"
                     onClick={() => handleCartQuantityDecrease(item.product.id)}
                   >
                     -
                   </button>
 
                   <button
-                    className="px-2 py-1 border font-bold border-second-text-color rounded text-black"
+                    className="w-8 h-8 border-2 border-primary-color rounded-full text-primary-color font-bold flex items-center justify-center"
                     onClick={() => handleCartQuantityIncrease(item.product.id)}
                   >
                     +

@@ -1,4 +1,4 @@
-import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE } from './actionTypes';
+import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES } from './actionTypes';
 
 export const setUser = (user) => ({
   type: SET_USER,
@@ -18,4 +18,9 @@ export const setTheme = (theme) => ({
 export const setLanguage = (language) => ({
   type: SET_LANGUAGE,
   payload: language,
+});
+
+export const setAddresses = (addresses) => ({
+  type: SET_ADDRESSES,
+  payload: addresses,
 });

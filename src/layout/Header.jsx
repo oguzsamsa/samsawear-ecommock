@@ -5,17 +5,17 @@ import md5 from "md5";
 import { fetchCategories } from "../redux/actions/thunkActions";
 import { toggleCartDropdown } from "../redux/actions/shoppingCartActions";
 import ShoppingCartDropdown from "../components/ShoppingCartDropdown";
+import { setUser } from "../redux/actions/clientActions";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [shopMenuOpen, setShopMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.category.categories);
   const cart = useSelector((state) => state.shoppingCart.cart);
-  const isDropdownOpen = useSelector(
-    (state) => state.shoppingCart.isDropdownOpen
-  );
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
@@ -52,6 +52,15 @@ export default function Header() {
 
   const toggleCartDropdownLocal = () => {
     dispatch(toggleCartDropdown());
+  };
+
+  const toggleUserDropdown = () => {
+    setUserDropdownOpen(!userDropdownOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(setUser({}));
+    setUserDropdownOpen(false);
   };
 
   const gravatarUrl = user.email
@@ -156,13 +165,35 @@ export default function Header() {
               onClick={toggleUserMenu}
             ></i>
             {user.email ? (
-              <div className="flex items-center gap-2">
-                <img
-                  src={gravatarUrl}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full"
-                />
-                <p className="font-bold hidden lg:block">{user.name}</p>
+              <div className="relative">
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={toggleUserDropdown}
+                >
+                  <img
+                    src={gravatarUrl}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <p className="font-bold hidden lg:block">{user.name}</p>
+                  <i
+                    className={`fas fa-chevron-${
+                      userDropdownOpen ? "up" : "down"
+                    } fa-xs`}
+                  ></i>
+                </div>
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-50">
+                    <ul className="py-1 text-sm text-gray-700">
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             ) : (
               <p className="font-bold hidden lg:block">
@@ -191,7 +222,7 @@ export default function Header() {
           )}
           <i className="fas fa-search fa-lg"></i>
           <div
-            className="relative"
+            className="relative z-50"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
