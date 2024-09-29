@@ -1,8 +1,9 @@
-import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES } from '../actions/actionTypes';
+import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES, SET_BILLING_ADDRESSES } from '../actions/actionTypes';
 
 const initialState = {
   user: {},
   addressList: [],
+  billingAddressList: [],
   creditCards: [],
   roles: [],
   theme: '',
@@ -21,6 +22,8 @@ const clientReducer = (state = initialState, action) => {
       return { ...state, language: action.payload };
     case SET_ADDRESSES:
       return {...state, addressList: action.payload};
+    case SET_BILLING_ADDRESSES:
+      return {...state, billingAddressList: [...state.billingAddressList, action.payload]};
     default:
       return state;
   }

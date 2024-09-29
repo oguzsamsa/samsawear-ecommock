@@ -1,4 +1,4 @@
-import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES } from './actionTypes';
+import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES, SET_BILLING_ADDRESSES } from './actionTypes';
 
 export const setUser = (user) => ({
   type: SET_USER,
@@ -24,3 +24,8 @@ export const setAddresses = (addresses) => ({
   type: SET_ADDRESSES,
   payload: addresses,
 });
+
+export const setBillingAddresses = (billingAddress) => ({
+  type: SET_BILLING_ADDRESSES,
+  payload: billingAddress,
+})

@@ -4,7 +4,6 @@ import { thunk } from "redux-thunk";
 import { createLogger } from "redux-logger";
 
 const logger = createLogger({
-    // Burada logger konfigürasyonunu yapabilirsiniz
     collapsed: true,
   });
 
