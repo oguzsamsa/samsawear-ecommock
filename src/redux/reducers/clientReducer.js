@@ -1,4 +1,4 @@
-import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES, SET_BILLING_ADDRESSES } from '../actions/actionTypes';
+import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES, SET_BILLING_ADDRESSES, DELETE_BILLING_ADDRESS } from '../actions/actionTypes';
 
 const initialState = {
   user: {},
@@ -24,6 +24,13 @@ const clientReducer = (state = initialState, action) => {
       return {...state, addressList: action.payload};
     case SET_BILLING_ADDRESSES:
       return {...state, billingAddressList: [...state.billingAddressList, action.payload]};
+    case DELETE_BILLING_ADDRESS:
+      return {
+        ...state,
+        billingAddressList: state.billingAddressList.filter(
+          (item) => item !== action.payload
+        ),
+      };
     default:
       return state;
   }

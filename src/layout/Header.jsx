@@ -251,20 +251,20 @@ export default function Header() {
         } text-center py-6 font-display text-3xl text-[#737373] lg:hidden`}
       >
         <ul className="flex flex-col gap-3">
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/">Home</NavLink>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/shop">Shop</NavLink>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/about">About</NavLink>
           </li>
-          <li>Blog</li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>Blog</li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/contact">Contact</NavLink>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/team">Team</NavLink>
           </li>
         </ul>

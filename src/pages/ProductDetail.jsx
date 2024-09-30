@@ -14,6 +14,8 @@ export default function ProductDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [displayedProductCount, setDisplayedProductCount] = useState(4);
 
+  const [isAdded, setIsAdded] = useState(false);
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -171,10 +173,14 @@ export default function ProductDetail() {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={handleAddToCart}
+                onClick={() => {
+                  handleAddToCart();
+                  setIsAdded(true);
+                }}
+                disabled={isAdded}
                 className="text-white bg-primary-color px-3 py-3 rounded-md"
               >
-                Add to cart
+                {isAdded ? "Added to Cart!" : "Add to Cart"}
               </button>
               <button>
                 <i className="fa-regular fa-heart bg-white border border-[#E8E8E8] p-2 rounded-full"></i>

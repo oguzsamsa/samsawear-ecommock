@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteBillingAddress,
   setAddresses,
   setBillingAddresses,
 } from "../redux/actions/clientActions";
 import axiosInstance from "../axios/axiosInstance";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 const CreateOrderPage = () => {
   const dispatch = useDispatch();
 
-  const addressList = useSelector((state) => state.client.addressList);
-  const billingAddressList = useSelector(
-    (state) => state.client.billingAddressList
-  );
+  // ORDER SUMMARY //
 
   const cartItems = useSelector((state) => state.shoppingCart.cart);
 
@@ -33,11 +30,20 @@ const CreateOrderPage = () => {
     return grandTotal.toFixed(2);
   };
 
+  // ADDRESS INFORMATION //
+
+  const addressList = useSelector((state) => state.client.addressList);
+  const billingAddressList = useSelector(
+    (state) => state.client.billingAddressList
+  );
+
   const [showForm, setShowForm] = useState(false);
   const [isBillingSame, setIsBillingSame] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedBillingAddress, setSelectedBillingAddress] = useState(null);
-  const [showBillingForm, setShowBillingForm] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [currentUpdatingAddress, setCurrentUpdatingAddress] = useState(null);
+
   const [newAddress, setNewAddress] = useState({
     title: "",
     name: "",
@@ -58,6 +64,59 @@ const CreateOrderPage = () => {
     neighborhood: "",
   });
 
+  const [errors, setErrors] = useState({
+    title: "",
+    name: "",
+    surname: "",
+    phone: "",
+    city: "",
+    district: "",
+    neighborhood: "",
+  });
+
+  const resetErrors = () => {
+    setErrors({
+      title: "",
+      name: "",
+      surname: "",
+      phone: "",
+      city: "",
+      district: "",
+      neighborhood: "",
+    });
+  };
+
+  const validateForm = (addressToValidate) => {
+    const newErrors = {
+      title: "",
+      name: "",
+      surname: "",
+      phone: "",
+      city: "",
+      district: "",
+      neighborhood: "",
+    };
+
+    if (!addressToValidate.title)
+      newErrors.title = "Address title is required.";
+    if (!addressToValidate.name || addressToValidate.name.length < 2)
+      newErrors.name = "Name must be at least 2 characters.";
+    if (!addressToValidate.surname || addressToValidate.surname.length < 2)
+      newErrors.surname = "Surname must be at least 2 characters.";
+    if (!addressToValidate.phone || !/^\d+$/.test(addressToValidate.phone))
+      newErrors.phone = "Valid phone number is required.";
+    if (!addressToValidate.city || addressToValidate.city.length < 3)
+      newErrors.city = "City must be at least 3 characters.";
+    if (!addressToValidate.district || addressToValidate.district.length < 2)
+      newErrors.district = "District must be at least 2 characters.";
+    if (!addressToValidate.neighborhood)
+      newErrors.neighborhood = "Neighborhood is required.";
+
+    setErrors(newErrors);
+
+    return Object.values(newErrors).some((error) => error !== "");
+  };
+
   const [isAddressInfoVisible, setIsAddressInfoVisible] = useState(false);
 
   useEffect(() => {
@@ -66,8 +125,24 @@ const CreateOrderPage = () => {
     });
   }, [dispatch]);
 
+  const resetForm = (setFormState) => {
+    setFormState({
+      title: "",
+      name: "",
+      surname: "",
+      phone: "",
+      city: "",
+      district: "",
+      neighborhood: "",
+    });
+  };
+
   const handleAddAddress = (e) => {
     e.preventDefault();
+
+    const hasErrors = validateForm(newAddress);
+    if (hasErrors) return;
+
     axiosInstance
       .post("/user/address", newAddress)
       .then((response) => {
@@ -79,30 +154,22 @@ const CreateOrderPage = () => {
       .catch((error) => {
         console.error("Adres eklenirken bir hata oluştu:", error);
       });
-    setNewAddress({
-      title: "",
-      name: "",
-      surname: "",
-      phone: "",
-      city: "",
-      district: "",
-      neighborhood: "",
-    });
+    resetForm(setNewAddress);
   };
 
   const handleAddBillingAddress = (e) => {
     e.preventDefault();
+
+    const hasErrors = validateForm(newBillingAddress);
+    if (hasErrors) return;
+
+    const currentAddresses = billingAddressList;
+    const updatedAddresses = [...currentAddresses, newBillingAddress];
     dispatch(setBillingAddresses(newBillingAddress));
-    setShowBillingForm(false);
-    setNewBillingAddress({
-      title: "",
-      name: "",
-      surname: "",
-      phone: "",
-      city: "",
-      district: "",
-      neighborhood: "",
-    });
+    setSelectedBillingAddress(updatedAddresses.length - 1);
+
+    resetForm(setNewBillingAddress);
+    setIsBillingSame(true);
   };
 
   const handleDeleteAddress = (addressId) => {
@@ -118,9 +185,44 @@ const CreateOrderPage = () => {
       });
   };
 
+  const handleDeleteBillingAddress = (address) => {
+    dispatch(deleteBillingAddress(address));
+  };
+
   const toggleAddressInfo = () => {
     setIsAddressInfoVisible(!isAddressInfoVisible);
   };
+
+  const openUpdateForm = (address) => {
+    setCurrentUpdatingAddress(address);
+    setIsUpdating(true);
+  };
+
+  const handleUpdateAddress = (e) => {
+    e.preventDefault();
+
+    const hasErrors = validateForm(currentUpdatingAddress);
+    if (hasErrors) return;
+
+    axiosInstance
+      .put(`/user/address`, currentUpdatingAddress) // Güncellenecek adres bilgilerini gönder
+      .then(() => {
+        // Güncel adresleri tekrar al
+        return axiosInstance.get("/user/address");
+      })
+      .then((res) => {
+        // Yeni adres listesini Redux state'ine güncelle
+        dispatch(setAddresses(res.data));
+        // Güncelleme formunu kapatma ve sıfırlama
+        setIsUpdating(false);
+        setCurrentUpdatingAddress(null);
+      })
+      .catch((error) => {
+        console.error("Adres güncellenirken bir hata oluştu:", error);
+      });
+  };
+
+  // CARD INFORMATION //
 
   return (
     <div className="container mx-auto p-4 flex justify-around max-md:flex-col">
@@ -161,7 +263,7 @@ const CreateOrderPage = () => {
                   onClick={toggleAddressInfo}
                   className="text-xs underline absolute right-2 top-2"
                 >
-                  Değiştir
+                  {isAddressInfoVisible ? "Close changing" : "Change"}
                 </button>
               </div>
             ) : (
@@ -171,7 +273,9 @@ const CreateOrderPage = () => {
                   onClick={toggleAddressInfo}
                   className="text-text-color underline text-xs"
                 >
-                  Select Address
+                  {isAddressInfoVisible
+                    ? "Close Selecting Address"
+                    : "Select Address"}
                 </button>
               </div>
             )}
@@ -212,15 +316,146 @@ const CreateOrderPage = () => {
                       </label>
                       <button
                         onClick={() => handleDeleteAddress(address.id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
+                        className="bg-red-500 mr-4 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
                       >
                         Delete
+                      </button>
+                      <button
+                        onClick={() => openUpdateForm(address)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
+                      >
+                        Update Address
                       </button>
                     </li>
                   ))}
                 </ul>
               ) : (
                 <p className="text-gray-500">No addresses saved.</p>
+              )}
+              {isUpdating && currentUpdatingAddress && (
+                <form onSubmit={handleUpdateAddress} className="mt-6 space-y-4">
+                  <div className="flex flex-col gap-4">
+                    <input
+                      type="text"
+                      placeholder="Address Title"
+                      value={currentUpdatingAddress.title}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          title: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full"
+                    />
+                    {errors.title && (
+                      <p className="text-red-500 text-sm">{errors.title}</p>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={currentUpdatingAddress.name}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          name: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm">{errors.name}</p>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Surname"
+                      value={currentUpdatingAddress.surname}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          surname: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full"
+                    />
+                    {errors.surname && (
+                      <p className="text-red-500 text-sm">{errors.surname}</p>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Phone"
+                      value={currentUpdatingAddress.phone}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          phone: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full"
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm">{errors.phone}</p>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={currentUpdatingAddress.city}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          city: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full"
+                    />
+                    {errors.city && (
+                      <p className="text-red-500 text-sm">{errors.city}</p>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="District"
+                      value={currentUpdatingAddress.district}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          district: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full"
+                    />
+                    {errors.district && (
+                      <p className="text-red-500 text-sm">{errors.district}</p>
+                    )}
+                    <textarea
+                      placeholder="Neighborhood, street, door number, etc."
+                      value={currentUpdatingAddress.neighborhood}
+                      onChange={(e) =>
+                        setCurrentUpdatingAddress({
+                          ...currentUpdatingAddress,
+                          neighborhood: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-2 rounded-md w-full h-24"
+                    ></textarea>
+                    {errors.neighborhood && (
+                      <p className="text-red-500 text-sm">
+                        {errors.neighborhood}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={() => validateForm()}
+                    className="bg-blue-500 mr-4 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    Update Address
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onClick={() => setIsUpdating(false)}
+                  >
+                    Cancel Updating
+                  </button>
+                </form>
               )}
               {billingAddressList.length > 0 && (
                 <div>
@@ -259,6 +494,12 @@ const CreateOrderPage = () => {
                               {address.neighborhood}
                             </p>
                           </label>
+                          <button
+                            onClick={() => handleDeleteBillingAddress(address)}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
+                          >
+                            Delete
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -274,12 +515,12 @@ const CreateOrderPage = () => {
                 onClick={() => setShowForm(!showForm)}
                 className="mt-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
               >
-                Add Address
+                Add New Address
               </button>
 
               {showForm && (
                 <form onSubmit={handleAddAddress} className="mt-6 space-y-4">
-                  <div className="flex flex-col gap-4 ">
+                  <div className="flex flex-col gap-4">
                     <input
                       type="text"
                       placeholder="Address Title"
@@ -289,6 +530,9 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full"
                     />
+                    {errors.title && (
+                      <p className="text-red-500 text-sm">{errors.title}</p>
+                    )}
                     <input
                       type="text"
                       placeholder="Name"
@@ -298,6 +542,9 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full"
                     />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm">{errors.name}</p>
+                    )}
                     <input
                       type="text"
                       placeholder="Surname"
@@ -310,6 +557,9 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full"
                     />
+                    {errors.surname && (
+                      <p className="text-red-500 text-sm">{errors.surname}</p>
+                    )}
                     <input
                       type="text"
                       placeholder="Phone"
@@ -319,6 +569,9 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full"
                     />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm">{errors.phone}</p>
+                    )}
                     <input
                       type="text"
                       placeholder="City"
@@ -328,6 +581,9 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full"
                     />
+                    {errors.city && (
+                      <p className="text-red-500 text-sm">{errors.city}</p>
+                    )}
                     <input
                       type="text"
                       placeholder="District"
@@ -340,6 +596,9 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full"
                     />
+                    {errors.district && (
+                      <p className="text-red-500 text-sm">{errors.district}</p>
+                    )}
                     <textarea
                       placeholder="Neighborhood, street, door number, etc."
                       value={newAddress.neighborhood}
@@ -351,13 +610,29 @@ const CreateOrderPage = () => {
                       }
                       className="border border-gray-300 p-2 rounded-md w-full h-24"
                     ></textarea>
+                    {errors.neighborhood && (
+                      <p className="text-red-500 text-sm">
+                        {errors.neighborhood}
+                      </p>
+                    )}
                   </div>
 
                   <button
                     type="submit"
+                    disabled={() => validateForm()}
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                   >
                     Save Address
+                  </button>
+                  <button
+                    onClick={() => {
+                      resetForm(setNewAddress);
+                      setShowForm(false);
+                      resetErrors();
+                    }}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-4"
+                  >
+                    Cancel
                   </button>
                 </form>
               )}
@@ -380,7 +655,7 @@ const CreateOrderPage = () => {
                       onSubmit={handleAddBillingAddress}
                       className="space-y-4 mt-4"
                     >
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-4">
                         <input
                           type="text"
                           placeholder="Billing Address Title"
@@ -393,6 +668,9 @@ const CreateOrderPage = () => {
                           }
                           className="border border-gray-300 p-2 rounded-md w-full"
                         />
+                        {errors.title && (
+                          <p className="text-red-500 text-sm">{errors.title}</p>
+                        )}
                         <input
                           type="text"
                           placeholder="Name"
@@ -405,6 +683,9 @@ const CreateOrderPage = () => {
                           }
                           className="border border-gray-300 p-2 rounded-md w-full"
                         />
+                        {errors.name && (
+                          <p className="text-red-500 text-sm">{errors.name}</p>
+                        )}
                         <input
                           type="text"
                           placeholder="Surname"
@@ -417,6 +698,11 @@ const CreateOrderPage = () => {
                           }
                           className="border border-gray-300 p-2 rounded-md w-full"
                         />
+                        {errors.surname && (
+                          <p className="text-red-500 text-sm">
+                            {errors.surname}
+                          </p>
+                        )}
                         <input
                           type="text"
                           placeholder="Phone"
@@ -429,6 +715,9 @@ const CreateOrderPage = () => {
                           }
                           className="border border-gray-300 p-2 rounded-md w-full"
                         />
+                        {errors.phone && (
+                          <p className="text-red-500 text-sm">{errors.phone}</p>
+                        )}
                         <input
                           type="text"
                           placeholder="City"
@@ -441,6 +730,9 @@ const CreateOrderPage = () => {
                           }
                           className="border border-gray-300 p-2 rounded-md w-full"
                         />
+                        {errors.city && (
+                          <p className="text-red-500 text-sm">{errors.city}</p>
+                        )}
                         <input
                           type="text"
                           placeholder="District"
@@ -453,23 +745,45 @@ const CreateOrderPage = () => {
                           }
                           className="border border-gray-300 p-2 rounded-md w-full"
                         />
+                        {errors.district && (
+                          <p className="text-red-500 text-sm">
+                            {errors.district}
+                          </p>
+                        )}
+                        <textarea
+                          placeholder="Neighborhood"
+                          value={newBillingAddress.neighborhood}
+                          onChange={(e) =>
+                            setNewBillingAddress({
+                              ...newBillingAddress,
+                              neighborhood: e.target.value,
+                            })
+                          }
+                          className="border border-gray-300 p-2 rounded-md w-full h-24"
+                        ></textarea>
+                        {errors.neighborhood && (
+                          <p className="text-red-500 text-sm">
+                            {errors.neighborhood}
+                          </p>
+                        )}
                       </div>
-                      <textarea
-                        placeholder="Neighborhood"
-                        value={newBillingAddress.neighborhood}
-                        onChange={(e) =>
-                          setNewBillingAddress({
-                            ...newBillingAddress,
-                            neighborhood: e.target.value,
-                          })
-                        }
-                        className="border border-gray-300 p-2 rounded-md w-full h-24"
-                      ></textarea>
+
                       <button
                         type="submit"
+                        disabled={() => validateForm()}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                       >
                         Save Billing Address
+                      </button>
+                      <button
+                        onClick={() => {
+                          resetForm(setNewBillingAddress);
+                          setIsBillingSame(true);
+                          resetErrors();
+                        }}
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-4"
+                      >
+                        Cancel
                       </button>
                     </form>
                   </div>
@@ -484,7 +798,7 @@ const CreateOrderPage = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col border-2 w-1/4  p-6 rounded-md py-10 max-md:mx-auto max-md:w-4/5">
+      <div className="flex flex-col border-2 w-1/3  p-6 rounded-md py-10 max-md:mx-auto max-md:w-4/5">
         <h2 className="font-bold text-xl mb-4">Order Summary</h2>
         <div className="flex justify-between mb-2 max-md:gap-4">
           <p>Products Total:</p>
