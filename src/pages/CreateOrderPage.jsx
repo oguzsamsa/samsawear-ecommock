@@ -6,6 +6,7 @@ import {
   setBillingAddresses,
 } from "../redux/actions/clientActions";
 import axiosInstance from "../axios/axiosInstance";
+import CreditCardManager from "../components/CreditCardManager";
 
 const CreateOrderPage = () => {
   const dispatch = useDispatch();
@@ -225,8 +226,8 @@ const CreateOrderPage = () => {
   // CARD INFORMATION //
 
   return (
-    <div className="container mx-auto p-4 flex justify-around max-md:flex-col">
-      <div className="flex flex-col gap-8">
+    <div className="container mx-auto p-4 flex justify-around max-md:flex-col font-display">
+      <div className="flex w-2/5 flex-col gap-8">
         <div>
           <div className="p-4 border-2">
             <h1 className="font-bold mb-4">Address Information</h1>
@@ -240,7 +241,14 @@ const CreateOrderPage = () => {
                     )?.title
                   }
                 </h3>
-                <p className="text-gray-700">
+                <h2 className="font-bold text-second-text-color my-2">
+                  {
+                    addressList.find(
+                      (address) => address.id === selectedAddress
+                    )?.name
+                  }
+                </h2>
+                <p className="text-second-text-color">
                   {
                     addressList.find(
                       (address) => address.id === selectedAddress
@@ -316,13 +324,13 @@ const CreateOrderPage = () => {
                       </label>
                       <button
                         onClick={() => handleDeleteAddress(address.id)}
-                        className="bg-red-500 mr-4 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
+                        className="bg-danger-text-color mr-4 text-white px-4 py-2 rounded hover:bg-red-700 mt-2"
                       >
                         Delete
                       </button>
                       <button
                         onClick={() => openUpdateForm(address)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
+                        className="bg-primary-color text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
                       >
                         Update Address
                       </button>
@@ -496,7 +504,7 @@ const CreateOrderPage = () => {
                           </label>
                           <button
                             onClick={() => handleDeleteBillingAddress(address)}
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
+                            className="bg-danger-text-color text-white px-4 py-2 rounded hover:bg-red-600 mt-2"
                           >
                             Delete
                           </button>
@@ -513,9 +521,9 @@ const CreateOrderPage = () => {
 
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="mt-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="bg-primary-color mt-6 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"
               >
-                Add New Address
+                {!showForm ? "Add new address" : "Close address form"}
               </button>
 
               {showForm && (
@@ -792,11 +800,8 @@ const CreateOrderPage = () => {
             </div>
           )}
         </div>
-        <div className="">
-          <div className="p-4 border-2">
-            <h1 className="font-bold">Card Information</h1>
-          </div>
-        </div>
+
+        <CreditCardManager />
       </div>
       <div className="flex flex-col border-2 w-1/3  p-6 rounded-md py-10 max-md:mx-auto max-md:w-4/5">
         <h2 className="font-bold text-xl mb-4">Order Summary</h2>
@@ -817,7 +822,7 @@ const CreateOrderPage = () => {
           <p>Grand Total:</p>
           <p>${getGrandTotalPrice()}</p>
         </div>
-        <button className="mt-6 w-full py-2 bg-blue-600 text-white font-bold rounded-md">
+        <button className="mt-6 w-full py-2 bg-primary-color text-white font-bold rounded-md">
           Create Order
         </button>
       </div>

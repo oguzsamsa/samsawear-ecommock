@@ -1,4 +1,4 @@
-import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES, SET_BILLING_ADDRESSES, DELETE_BILLING_ADDRESS } from '../actions/actionTypes';
+import { SET_USER, SET_ROLES, SET_THEME, SET_LANGUAGE, SET_ADDRESSES, SET_BILLING_ADDRESSES, DELETE_BILLING_ADDRESS, SET_CREDIT_CARDS, ADD_CREDIT_CARD, UPDATE_CREDIT_CARD, DELETE_CREDIT_CARD } from '../actions/actionTypes';
 
 const initialState = {
   user: {},
@@ -30,6 +30,22 @@ const clientReducer = (state = initialState, action) => {
         billingAddressList: state.billingAddressList.filter(
           (item) => item !== action.payload
         ),
+      };
+    case SET_CREDIT_CARDS:
+      return { ...state, creditCards: action.payload };
+    case ADD_CREDIT_CARD:
+      return { ...state, creditCards: [...state.creditCards, action.payload] };
+    case UPDATE_CREDIT_CARD:
+      return {
+        ...state,
+        creditCards: state.creditCards.map((card) =>
+          card.id === action.payload.id ? action.payload : card
+        ),
+      };
+    case DELETE_CREDIT_CARD:
+      return {
+        ...state,
+        creditCards: state.creditCards.filter((card) => card.id !== action.payload),
       };
     default:
       return state;
