@@ -45,6 +45,8 @@ const CreateOrderPage = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentUpdatingAddress, setCurrentUpdatingAddress] = useState(null);
 
+  const [selectedCard, setSelectedCard] = useState(null);
+
   const [newAddress, setNewAddress] = useState({
     title: "",
     name: "",
@@ -801,7 +803,7 @@ const CreateOrderPage = () => {
           )}
         </div>
 
-        <CreditCardManager />
+        <CreditCardManager onSelectCard={setSelectedCard} />
       </div>
       <div className="flex flex-col border-2 w-1/3  p-6 rounded-md py-10 max-md:mx-auto max-md:w-4/5">
         <h2 className="font-bold text-xl mb-4">Order Summary</h2>
@@ -822,7 +824,10 @@ const CreateOrderPage = () => {
           <p>Grand Total:</p>
           <p>${getGrandTotalPrice()}</p>
         </div>
-        <button className="mt-6 w-full py-2 bg-primary-color text-white font-bold rounded-md">
+        <button
+          className="mt-6 w-full py-2 bg-primary-color text-white font-bold rounded-md"
+          disabled={!cartItems.length > 0 || !selectedAddress || !selectedCard}
+        >
           Create Order
         </button>
       </div>

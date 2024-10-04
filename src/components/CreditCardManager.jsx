@@ -8,7 +8,7 @@ import {
 } from "../redux/actions/clientActions";
 import axiosInstance from "../axios/axiosInstance";
 
-const CreditCardManager = () => {
+const CreditCardManager = ({ onSelectCard }) => {
   const dispatch = useDispatch();
   const { creditCards } = useSelector((state) => state.client);
 
@@ -27,6 +27,7 @@ const CreditCardManager = () => {
     expire_month: "",
     expire_year: "",
     name_on_card: "",
+    cvv: "",
   });
 
   // Kartları sayfa yüklendiğinde getirme
@@ -37,13 +38,54 @@ const CreditCardManager = () => {
         dispatch(setCreditCards(res.data));
       })
       .catch((error) => console.error("Error fetching cards:", error));
-  }, [dispatch, creditCards]);
+  }, [dispatch]);
+
+  const formatCardNumber = (value) => {
+    return value
+      .replace(/\s/g, "")
+      .replace(/(\d{4})/g, "$1 ")
+      .trim();
+  };
+
+  const handleSelectCard = (card) => {
+    setSelectedCard(card);
+    onSelectCard(card);
+  };
+
+  const handleCardNumberChange = (e) => {
+    const formattedCardNumber = formatCardNumber(e.target.value);
+    setForm({ ...form, card_no: formattedCardNumber });
+  };
+
+  const handleExpireMonthChange = (e) => {
+    let value = parseInt(e.target.value);
+    if (value > 12) value = 12;
+    if (value < 1) value = 1;
+    setForm({ ...form, expire_month: value.toString().padStart(2, "0") });
+  };
+
+  const handleExpireYearChange = (e) => {
+    const currentYear = new Date().getFullYear();
+    let value = parseInt(e.target.value);
+    if (value < currentYear) value = currentYear;
+    setForm({ ...form, expire_year: value.toString() });
+  };
 
   // Kart ekleme veya güncelleme işlemi
   const handleAddCard = (e) => {
     e.preventDefault();
+
+    const sanitizedCardNumber = form.card_no.replace(/\s/g, "");
+
+    const cardData = {
+      card_no: sanitizedCardNumber,
+      expire_month: form.expire_month,
+      expire_year: form.expire_year,
+      name_on_card: form.name_on_card,
+    };
+
     axiosInstance
-      .post("/user/card", form)
+      .post("/user/card", cardData)
       .then((res) => {
         dispatch(addCreditCard(res.data));
         setSelectedCard(null);
@@ -93,6 +135,16 @@ const CreditCardManager = () => {
   const convertCardNo = (cardNo) => {
     const lastFour = cardNo.slice(-4);
     return "**** **** **** " + lastFour;
+  };
+
+  const resetForm = () => {
+    setForm({
+      card_no: "",
+      expire_month: "",
+      expire_year: "",
+      name_on_card: "",
+      cvv: "",
+    });
   };
 
   return (
@@ -153,21 +205,29 @@ const CreditCardManager = () => {
                       className="mr-3"
                       checked={selectedCard && selectedCard.id === card.id}
                       onChange={() => {
-                        setSelectedCard(card);
+                        handleSelectCard(card);
                         setIsCardInfoVisible(false);
                       }}
                     />
                     <div className="">
                       <h3 className="text-lg font-bold">Mastercard</h3>
                       <p>{card.name_on_card}</p>
-                      <p className="">
-                        {card.card_no
-                          ? convertCardNo(card.card_no)
-                          : "No card no"}
-                      </p>
+                      <div className="inline-block">
+                        <p className="">
+                          {card.card_no
+                            ? convertCardNo(card.card_no)
+                            : "No card no"}
+                        </p>
+                        <div className="w-full flex justify-between">
+                          <p>
+                            {card.expire_month}/{card.expire_year}
+                          </p>
+                          <p>***</p>
+                        </div>
+                      </div>
                     </div>
                   </label>
-                  <div className="flex gap-4 mt-2">
+                  <div className="flex justify-between mt-2">
                     <button
                       className="bg-danger-text-color text-white px-4 py-2 rounded hover:bg-red-700"
                       onClick={() => handleDelete(card.id)}
@@ -212,11 +272,11 @@ const CreditCardManager = () => {
                 <input
                   type="text"
                   value={form.card_no}
-                  onChange={(e) =>
-                    setForm({ ...form, card_no: e.target.value })
-                  }
+                  onChange={handleCardNumberChange}
+                  maxLength={19}
+                  placeholder="XXXX XXXX XXXX XXXX"
                   required
-                  className="border p-2 w-full mb-4"
+                  className="border p-2 w-1/2 mb-4"
                 />
               </div>
               <div>
@@ -227,41 +287,62 @@ const CreditCardManager = () => {
                   onChange={(e) =>
                     setForm({ ...form, name_on_card: e.target.value })
                   }
+                  placeholder="Jane Doe"
                   required
-                  className="border p-2 w-full mb-4"
+                  className="border p-2 w-1/2 mb-4"
                 />
               </div>
               <div className="flex gap-4 ">
-                <div>
+                <div className="">
                   <label className="block mb-2">Expire Month:</label>
                   <input
-                    type="text"
+                    type="number"
                     value={form.expire_month}
-                    onChange={(e) =>
-                      setForm({ ...form, expire_month: e.target.value })
-                    }
+                    onChange={handleExpireMonthChange}
+                    min="1"
+                    max="12"
+                    placeholder="MM"
                     required
-                    className="border p-2 w-full"
+                    className="border p-2 w-16"
                   />
                 </div>
                 <div>
                   <label className="block mb-2">Expire Year:</label>
                   <input
-                    type="text"
+                    type="number"
                     value={form.expire_year}
-                    onChange={(e) =>
-                      setForm({ ...form, expire_year: e.target.value })
-                    }
+                    onChange={handleExpireYearChange}
+                    placeholder="YYYY"
                     required
-                    className="border p-2 w-full"
+                    className="border p-2 w-24"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2">CVV:</label>
+                  <input
+                    type="number"
+                    value={form.cvv}
+                    onChange={(e) => setForm({ ...form, cvv: e.target.value })}
+                    maxLength={3}
+                    placeholder="***"
+                    required
+                    className="border p-2 w-16 mb-4"
                   />
                 </div>
               </div>
               <button
                 type="submit"
-                className="bg-blue-500 text-white p-2 rounded"
+                className="bg-blue-500 mt-4 text-white p-2 rounded"
               >
                 Add Card
+              </button>
+              <button
+                className="bg-danger-text-color ml-4 text-white px-4 py-2 rounded hover:bg-red-70"
+                onClick={() => {
+                  setIsFormVisible(false);
+                }}
+              >
+                Cancel
               </button>
             </form>
           )}
@@ -272,9 +353,9 @@ const CreditCardManager = () => {
                 <input
                   type="text"
                   value={form.card_no}
-                  onChange={(e) =>
-                    setForm({ ...form, card_no: e.target.value })
-                  }
+                  onChange={handleCardNumberChange}
+                  maxLength={19}
+                  placeholder="XXXX XXXX XXXX XXXX"
                   required
                   className="border p-2 w-full mb-4"
                 />
@@ -287,6 +368,7 @@ const CreditCardManager = () => {
                   onChange={(e) =>
                     setForm({ ...form, name_on_card: e.target.value })
                   }
+                  placeholder="Jane Doe"
                   required
                   className="border p-2 w-full mb-4"
                 />
@@ -297,9 +379,10 @@ const CreditCardManager = () => {
                   <input
                     type="text"
                     value={form.expire_month}
-                    onChange={(e) =>
-                      setForm({ ...form, expire_month: e.target.value })
-                    }
+                    onChange={handleExpireMonthChange}
+                    min="1"
+                    max="12"
+                    placeholder="MM"
                     required
                     className="border p-2 w-full"
                   />
@@ -309,19 +392,38 @@ const CreditCardManager = () => {
                   <input
                     type="text"
                     value={form.expire_year}
-                    onChange={(e) =>
-                      setForm({ ...form, expire_year: e.target.value })
-                    }
+                    onChange={handleExpireYearChange}
+                    placeholder="YYYY"
                     required
                     className="border p-2 w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2">CVV:</label>
+                  <input
+                    type="number"
+                    value={form.cvv}
+                    onChange={(e) => setForm({ ...form, cvv: e.target.value })}
+                    maxLength={3}
+                    placeholder="***"
+                    required
+                    className="border p-2 w-full mb-4"
                   />
                 </div>
               </div>
               <button
                 type="submit"
-                className="bg-primary-color hover:bg-blue-600 text-white px-4 py-2 rounded"
+                className="bg-primary-color mt-4 hover:bg-blue-600 text-white px-4 py-2 rounded"
               >
                 Update Card
+              </button>
+              <button
+                className="bg-danger-text-color ml-4 text-white px-4 py-2 rounded hover:bg-red-70"
+                onClick={() => {
+                  setIsFormVisible(false);
+                }}
+              >
+                Cancel
               </button>
             </form>
           )}
