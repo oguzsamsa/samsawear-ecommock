@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCreditCards,
-  addCreditCard,
   updateCreditCard,
   deleteCreditCard,
 } from "../redux/actions/clientActions";
@@ -16,12 +15,10 @@ const CreditCardManager = ({ onSelectCard }) => {
   const [isCardInfoVisible, setIsCardInfoVisible] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  // Kart formunun görünürlüğünü değiştirme fonksiyonu
   const toggleCardInfo = () => {
     setIsCardInfoVisible((prev) => !prev);
   };
 
-  // Kart formu için state
   const [form, setForm] = useState({
     card_no: "",
     expire_month: "",
@@ -30,15 +27,18 @@ const CreditCardManager = ({ onSelectCard }) => {
     cvv: "",
   });
 
-  // Kartları sayfa yüklendiğinde getirme
-  useEffect(() => {
+  const fetchCreditCards = () => {
     axiosInstance
       .get("/user/card")
       .then((res) => {
         dispatch(setCreditCards(res.data));
       })
-      .catch((error) => console.error("Error fetching cards:", error));
-  }, [dispatch]);
+      .catch((error) => console.error("Error fetching cards: ", error));
+  };
+
+  useEffect(() => {
+    fetchCreditCards();
+  }, []);
 
   const formatCardNumber = (value) => {
     return value
@@ -57,21 +57,79 @@ const CreditCardManager = ({ onSelectCard }) => {
     setForm({ ...form, card_no: formattedCardNumber });
   };
 
-  const handleExpireMonthChange = (e) => {
-    let value = parseInt(e.target.value);
-    if (value > 12) value = 12;
-    if (value < 1) value = 1;
-    setForm({ ...form, expire_month: value.toString().padStart(2, "0") });
+  const handleExpireMonthInput = (e) => {
+    const value = e.target.value;
+
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+
+    if (value.length === 0) {
+      setForm({ ...form, expire_month: "" });
+      return;
+    }
+
+    if (value.length > 2) {
+      setForm({ ...form, expire_month: value.slice(0, 2) });
+      return;
+    }
+
+    const numericValue = parseFloat(value);
+
+    if (numericValue > 12 || numericValue < 1) {
+      return;
+    }
+
+    if (value.length === 1) {
+      setForm({ ...form, expire_month: value });
+    } else {
+      setForm({ ...form, expire_month: value.padStart(2, "0") });
+    }
   };
 
   const handleExpireYearChange = (e) => {
     const currentYear = new Date().getFullYear();
-    let value = parseInt(e.target.value);
-    if (value < currentYear) value = currentYear;
-    setForm({ ...form, expire_year: value.toString() });
+    let value = e.target.value;
+
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+
+    if (value.length === 0) {
+      setForm({ ...form, expire_year: "" });
+      return;
+    }
+
+    if (value.length > 4) {
+      setForm({ ...form, expire_year: value.slice(0, 4) });
+      return;
+    }
+
+    const numericValue = parseInt(value);
+
+    if (value.length < 4) {
+      setForm({ ...form, expire_year: value });
+    } else if (!value.startsWith("20")) {
+      setForm({ ...form, expire_year: "20" + value.slice(-2) });
+    } else if (numericValue < currentYear) {
+      setForm({ ...form, expire_year: currentYear.toString() });
+    } else {
+      setForm({ ...form, expire_year: value });
+    }
   };
 
-  // Kart ekleme veya güncelleme işlemi
+  const handleCvvChange = (e) => {
+    const value = e.target.value;
+
+    // Sadece sayılara izin ver ve maksimum 3 hane kontrolü yap
+    if (/^\d{0,3}$/.test(value)) {
+      setForm({ ...form, cvv: value });
+    } else {
+      // Eğer geçersiz bir karakter girilirse, input alanını temizle
+      setForm({ ...form, cvv: "" });
+    }
+  };
+
   const handleAddCard = (e) => {
     e.preventDefault();
 
@@ -87,7 +145,7 @@ const CreditCardManager = ({ onSelectCard }) => {
     axiosInstance
       .post("/user/card", cardData)
       .then((res) => {
-        dispatch(addCreditCard(res.data));
+        fetchCreditCards();
         setSelectedCard(null);
         setForm({
           card_no: "",
@@ -115,19 +173,20 @@ const CreditCardManager = ({ onSelectCard }) => {
     }
   };
 
-  // Kart düzenleme işlemi
   const handleEdit = (card) => {
     setSelectedCard(card);
     setForm(card);
-    setIsCardInfoVisible(true); // Düzenleme için formu aç
+    setIsCardInfoVisible(true);
   };
 
-  // Kart silme işlemi
   const handleDelete = (cardId) => {
     axiosInstance
       .delete(`/user/card/${cardId}`)
       .then(() => {
         dispatch(deleteCreditCard(cardId));
+        if (selectedCard && selectedCard.id === cardId) {
+          setSelectedCard(null);
+        }
       })
       .catch((error) => console.error("Error deleting card:", error));
   };
@@ -135,16 +194,6 @@ const CreditCardManager = ({ onSelectCard }) => {
   const convertCardNo = (cardNo) => {
     const lastFour = cardNo.slice(-4);
     return "**** **** **** " + lastFour;
-  };
-
-  const resetForm = () => {
-    setForm({
-      card_no: "",
-      expire_month: "",
-      expire_year: "",
-      name_on_card: "",
-      cvv: "",
-    });
   };
 
   return (
@@ -209,11 +258,16 @@ const CreditCardManager = ({ onSelectCard }) => {
                         setIsCardInfoVisible(false);
                       }}
                     />
-                    <div className="">
-                      <h3 className="text-lg font-bold">Mastercard</h3>
-                      <p>{card.name_on_card}</p>
+                    <div className=" border border-second-text-color p-2">
+                      <div className="flex justify-between mb-6">
+                        <h3 className="text-lg font-bold text-[#1A1F71] order-4 italic">
+                          Visa
+                        </h3>
+                        <p className="font-semibold">{card.name_on_card}</p>
+                      </div>
+
                       <div className="inline-block">
-                        <p className="">
+                        <p className=" -my-1">
                           {card.card_no
                             ? convertCardNo(card.card_no)
                             : "No card no"}
@@ -222,7 +276,6 @@ const CreditCardManager = ({ onSelectCard }) => {
                           <p>
                             {card.expire_month}/{card.expire_year}
                           </p>
-                          <p>***</p>
                         </div>
                       </div>
                     </div>
@@ -276,7 +329,7 @@ const CreditCardManager = ({ onSelectCard }) => {
                   maxLength={19}
                   placeholder="XXXX XXXX XXXX XXXX"
                   required
-                  className="border p-2 w-1/2 mb-4"
+                  className="border p-2 w-3/4 mb-4"
                 />
               </div>
               <div>
@@ -296,11 +349,9 @@ const CreditCardManager = ({ onSelectCard }) => {
                 <div className="">
                   <label className="block mb-2">Expire Month:</label>
                   <input
-                    type="number"
+                    type="type"
                     value={form.expire_month}
-                    onChange={handleExpireMonthChange}
-                    min="1"
-                    max="12"
+                    onInput={handleExpireMonthInput}
                     placeholder="MM"
                     required
                     className="border p-2 w-16"
@@ -309,7 +360,7 @@ const CreditCardManager = ({ onSelectCard }) => {
                 <div>
                   <label className="block mb-2">Expire Year:</label>
                   <input
-                    type="number"
+                    type="text"
                     value={form.expire_year}
                     onChange={handleExpireYearChange}
                     placeholder="YYYY"
@@ -317,18 +368,18 @@ const CreditCardManager = ({ onSelectCard }) => {
                     className="border p-2 w-24"
                   />
                 </div>
-                <div>
-                  <label className="block mb-2">CVV:</label>
-                  <input
-                    type="number"
-                    value={form.cvv}
-                    onChange={(e) => setForm({ ...form, cvv: e.target.value })}
-                    maxLength={3}
-                    placeholder="***"
-                    required
-                    className="border p-2 w-16 mb-4"
-                  />
-                </div>
+              </div>
+              <div className="mt-4">
+                <label className="block mb-2">CVV:</label>
+                <input
+                  type="text"
+                  value={form.cvv}
+                  onChange={handleCvvChange}
+                  maxLength={3}
+                  placeholder="***"
+                  required
+                  className="border p-2 w-16 mb-4"
+                />
               </div>
               <button
                 type="submit"
@@ -357,7 +408,7 @@ const CreditCardManager = ({ onSelectCard }) => {
                   maxLength={19}
                   placeholder="XXXX XXXX XXXX XXXX"
                   required
-                  className="border p-2 w-full mb-4"
+                  className="border p-2 w-3/4 mb-4"
                 />
               </div>
               <div>
@@ -370,7 +421,7 @@ const CreditCardManager = ({ onSelectCard }) => {
                   }
                   placeholder="Jane Doe"
                   required
-                  className="border p-2 w-full mb-4"
+                  className="border p-2 w-1/2 mb-4"
                 />
               </div>
               <div className="flex gap-4 ">
@@ -379,12 +430,12 @@ const CreditCardManager = ({ onSelectCard }) => {
                   <input
                     type="text"
                     value={form.expire_month}
-                    onChange={handleExpireMonthChange}
+                    onInput={handleExpireMonthInput}
                     min="1"
                     max="12"
                     placeholder="MM"
                     required
-                    className="border p-2 w-full"
+                    className="border p-2 w-16"
                   />
                 </div>
                 <div>
@@ -395,21 +446,21 @@ const CreditCardManager = ({ onSelectCard }) => {
                     onChange={handleExpireYearChange}
                     placeholder="YYYY"
                     required
-                    className="border p-2 w-full"
+                    className="border p-2 w-24"
                   />
                 </div>
-                <div>
-                  <label className="block mb-2">CVV:</label>
-                  <input
-                    type="number"
-                    value={form.cvv}
-                    onChange={(e) => setForm({ ...form, cvv: e.target.value })}
-                    maxLength={3}
-                    placeholder="***"
-                    required
-                    className="border p-2 w-full mb-4"
-                  />
-                </div>
+              </div>
+              <div>
+                <label className="block mb-2">CVV:</label>
+                <input
+                  type="text"
+                  value={form.cvv}
+                  onChange={handleCvvChange}
+                  maxLength={3}
+                  placeholder="***"
+                  required
+                  className="border p-2 w-16 mb-4"
+                />
               </div>
               <button
                 type="submit"

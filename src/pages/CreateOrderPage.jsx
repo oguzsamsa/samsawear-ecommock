@@ -228,8 +228,8 @@ const CreateOrderPage = () => {
   // CARD INFORMATION //
 
   return (
-    <div className="container mx-auto p-4 flex justify-around max-md:flex-col font-display">
-      <div className="flex w-2/5 flex-col gap-8">
+    <div className="container mx-auto p-4 flex justify-around max-lg:flex-col font-display">
+      <div className="flex max-md:w-4/5 mx-auto w-2/5 flex-col gap-8">
         <div>
           <div className="p-4 border-2">
             <h1 className="font-bold mb-4">Address Information</h1>
@@ -805,7 +805,7 @@ const CreateOrderPage = () => {
 
         <CreditCardManager onSelectCard={setSelectedCard} />
       </div>
-      <div className="flex flex-col border-2 w-1/3  p-6 rounded-md py-10 max-md:mx-auto max-md:w-4/5">
+      <div className="flex flex-col border-2 lg:w-1/3 w-2/5  p-6 rounded-md py-10 max-lg:mx-auto max-md:w-4/5">
         <h2 className="font-bold text-xl mb-4">Order Summary</h2>
         <div className="flex justify-between mb-2 max-md:gap-4">
           <p>Products Total:</p>
