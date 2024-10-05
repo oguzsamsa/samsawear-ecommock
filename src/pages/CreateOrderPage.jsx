@@ -7,9 +7,11 @@ import {
 } from "../redux/actions/clientActions";
 import axiosInstance from "../axios/axiosInstance";
 import CreditCardManager from "../components/CreditCardManager";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const CreateOrderPage = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // ORDER SUMMARY //
 
@@ -222,6 +224,39 @@ const CreateOrderPage = () => {
       })
       .catch((error) => {
         console.error("Adres güncellenirken bir hata oluştu:", error);
+      });
+  };
+
+  const handleCompleteOrder = (e) => {
+    e.preventDefault();
+
+    const orderPayload = {
+      address_id: selectedAddress,
+      order_date: new Date().toISOString(), // Şu anki zamanı kullanarak ISO formatında tarih.
+      card_no: selectedCard.card_no,
+      card_name: selectedCard.name_on_card,
+      card_expire_month: selectedCard.expire_month,
+      card_expire_year: selectedCard.expire_year,
+      card_ccv: 123, // Varsayılan değer
+      price: getGrandTotalPrice(), // Fonksiyonundan aldığın toplam fiyat
+      products: cartItems.map((item) => ({
+        product_id: item.product.id,
+        count: item.count,
+        detail: `${item.product.description}`, // Ürünün açıklaması detay olarak ekleniyor
+      })),
+    };
+
+    axiosInstance
+      .post("/order", orderPayload)
+      .then((response) => {
+        console.log("Sipariş başarılı:", response.data);
+        history.push({
+          pathname: "/order-completed",
+          state: { orderInfo: response.data },
+        });
+      })
+      .catch((error) => {
+        console.error("Sipariş hatası:", error);
       });
   };
 
@@ -827,6 +862,7 @@ const CreateOrderPage = () => {
         <button
           className="mt-6 w-full py-2 bg-primary-color text-white font-bold rounded-md"
           disabled={!cartItems.length > 0 || !selectedAddress || !selectedCard}
+          onClick={handleCompleteOrder}
         >
           Create Order
         </button>

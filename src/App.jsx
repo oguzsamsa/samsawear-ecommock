@@ -19,6 +19,7 @@ import ShoppingCart from "./pages/ShoppingCart";
 import axiosInstance from "./axios/axiosInstance";
 import PrivateRoute from "./components/PrivateRoute";
 import CreateOrderPage from "./pages/CreateOrderPage";
+import OrderCompletedPage from "./pages/OrderCompletedPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +61,9 @@ function App() {
         <Route path="/login">
           <LoginForm />
         </Route>
+        <PrivateRoute exact path="/order-completed">
+          <OrderCompletedPage />
+        </PrivateRoute>
         <PrivateRoute exact path="/shop">
           <Shop />
         </PrivateRoute>
