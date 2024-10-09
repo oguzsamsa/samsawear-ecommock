@@ -60,7 +60,7 @@ const OrderCompletedPage = () => {
         </span>
       </p>
 
-      <h2 className="text-lg font-semibold mt-6">Ürünler:</h2>
+      <h2 className="text-lg font-semibold mt-6 mb-3">Ürünler:</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {order?.products.map((product) => (
           <div

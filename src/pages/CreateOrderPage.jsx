@@ -8,6 +8,7 @@ import {
 import axiosInstance from "../axios/axiosInstance";
 import CreditCardManager from "../components/CreditCardManager";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { setCart } from "../redux/actions/shoppingCartActions";
 
 const CreateOrderPage = () => {
   const dispatch = useDispatch();
@@ -258,6 +259,8 @@ const CreateOrderPage = () => {
       .catch((error) => {
         console.error("Sipariş hatası:", error);
       });
+
+    dispatch(setCart([]));
   };
 
   // CARD INFORMATION //
@@ -342,6 +345,7 @@ const CreateOrderPage = () => {
                         <input
                           type="radio"
                           name="selectedAddress"
+                          className="hidden"
                           value={address.id}
                           onChange={() => {
                             setSelectedAddress(address.id);
@@ -349,15 +353,17 @@ const CreateOrderPage = () => {
                           }}
                           checked={selectedAddress === address.id}
                         />
-                        <p className="font-semibold">{address.title}</p>
-                        <p>
-                          {address.name} {address.surname}
-                        </p>
-                        <p>{address.phone}</p>
-                        <p>
-                          {address.city}, {address.district},{" "}
-                          {address.neighborhood}
-                        </p>
+                        <div className="p-2 cursor-pointer" title="Select">
+                          <p className="font-semibold">{address.title}</p>
+                          <p>
+                            {address.name} {address.surname}
+                          </p>
+                          <p>{address.phone}</p>
+                          <p>
+                            {address.city}, {address.district},{" "}
+                            {address.neighborhood}
+                          </p>
+                        </div>
                       </label>
                       <button
                         onClick={() => handleDeleteAddress(address.id)}

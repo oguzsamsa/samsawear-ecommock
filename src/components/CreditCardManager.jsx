@@ -251,14 +251,21 @@ const CreditCardManager = ({ onSelectCard }) => {
                     <input
                       type="radio"
                       name="selectedCard"
-                      className="mr-3"
+                      className="mr-3 hidden"
                       checked={selectedCard && selectedCard.id === card.id}
                       onChange={() => {
                         handleSelectCard(card);
                         setIsCardInfoVisible(false);
                       }}
                     />
-                    <div className=" border border-second-text-color p-2">
+                    <div
+                      className=" p-2 cursor-pointer"
+                      onClick={() => {
+                        handleSelectCard(card);
+                        setIsCardInfoVisible(false);
+                      }}
+                      title="Select"
+                    >
                       <div className="flex justify-between mb-6">
                         <h3 className="text-lg font-bold text-[#1A1F71] order-4 italic">
                           Visa

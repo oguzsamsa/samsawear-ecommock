@@ -6,6 +6,7 @@ import { fetchCategories } from "../redux/actions/thunkActions";
 import { toggleCartDropdown } from "../redux/actions/shoppingCartActions";
 import ShoppingCartDropdown from "../components/ShoppingCartDropdown";
 import { setUser } from "../redux/actions/clientActions";
+import { Link, Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -191,6 +192,14 @@ export default function Header() {
                       >
                         Logout
                       </li>
+                      <Link to="/previous-orders">
+                        <li
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        >
+                          Previous Orders
+                        </li>
+                      </Link>
                     </ul>
                   </div>
                 )}

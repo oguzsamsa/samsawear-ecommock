@@ -20,6 +20,7 @@ import axiosInstance from "./axios/axiosInstance";
 import PrivateRoute from "./components/PrivateRoute";
 import CreateOrderPage from "./pages/CreateOrderPage";
 import OrderCompletedPage from "./pages/OrderCompletedPage";
+import PreviousOrders from "./pages/PreviousOrders";
 
 function App() {
   const dispatch = useDispatch();
@@ -63,6 +64,9 @@ function App() {
         </Route>
         <PrivateRoute exact path="/order-completed">
           <OrderCompletedPage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/previous-orders">
+          <PreviousOrders />
         </PrivateRoute>
         <PrivateRoute exact path="/shop">
           <Shop />
