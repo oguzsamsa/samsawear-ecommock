@@ -39,7 +39,8 @@ export const login = (email, password, rememberMe, history) => {
                 sessionStorage.setItem("token", userData.token);
             }
 
-            history.push("/");
+            const redirectPath = history.location.state?.from || "/";
+            history.push(redirectPath);
             toast.success("Login successful!");
         } catch (error) {
             toast.error("Login failed. Please check your email and password.");
@@ -63,12 +64,12 @@ export const verifyToken = (history) => {
             } else {
                 sessionStorage.setItem("token", user.token);
             }
-            history.push("/");
         } catch (error) {
             console.error("Token verification failed:", error);
             localStorage.removeItem("token");
             sessionStorage.removeItem("token");
-            history.push("/login")
+            history.push("/login", {from: "/create-order"});
+            throw new Error ("Token verification failed");
         }
     };
 };

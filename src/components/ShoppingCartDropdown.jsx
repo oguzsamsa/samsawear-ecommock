@@ -4,9 +4,12 @@ import {
   cartQuantityIncrease,
 } from "../redux/actions/shoppingCartActions";
 import { Link } from "react-router-dom/cjs/react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { verifyToken } from "../redux/actions/thunkActions";
 
 export default function ShoppingCartDropdown({ cart }) {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleCartQuantityDecrease = (productId) => {
     dispatch(cartQuantityDecrease(productId));
@@ -20,6 +23,23 @@ export default function ShoppingCartDropdown({ cart }) {
     (total, item) => total + item.product.price * item.count,
     0
   );
+
+  const handleCheckout = async () => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    if (!token) {
+      history.push("/login", { from: "/create-order" });
+    } else {
+      try {
+        await dispatch(verifyToken(history));
+        history.push("/create-order");
+      } catch (error) {
+        console.error("Token verification failed:", error);
+        history.push("/login", { from: "/checkout" });
+      }
+    }
+  };
 
   return (
     <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-300 shadow-lg p-4 z-20">
@@ -78,7 +98,10 @@ export default function ShoppingCartDropdown({ cart }) {
             Go to Cart
           </button>
         </Link>
-        <button className="bg-success-text-color text-white px-4 py-2 rounded">
+        <button
+          onClick={handleCheckout}
+          className="bg-success-text-color text-white px-4 py-2 rounded"
+        >
           Checkout
         </button>
       </div>

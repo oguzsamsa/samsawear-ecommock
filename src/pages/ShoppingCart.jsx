@@ -5,11 +5,13 @@ import {
   removeItem,
   toggleSelectItem,
 } from "../redux/actions/shoppingCartActions";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { verifyToken } from "../redux/actions/thunkActions";
 
 const ShoppingCart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.shoppingCart.cart);
+  const history = useHistory();
 
   const shippingCost = cartItems.length > 0 ? 5.99 : 0;
   const discount = cartItems.length > 0 ? 10.0 : 0;
@@ -25,6 +27,24 @@ const ShoppingCart = () => {
     const totalPrice = parseFloat(getTotalPrice());
     const grandTotal = totalPrice + shippingCost - discount;
     return grandTotal.toFixed(2);
+  };
+
+  const handleCreateOrder = async (e) => {
+    e.preventDefault();
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    console.log("Token:", token);
+
+    if (!token) {
+      history.push("/login", { from: "/create-order" });
+    } else {
+      try {
+        await dispatch(verifyToken(history));
+        history.push("/create-order");
+      } catch (error) {
+        history.push("/login", { from: "/create-order" });
+      }
+    }
   };
 
   return (
@@ -121,11 +141,13 @@ const ShoppingCart = () => {
           <p>Grand Total:</p>
           <p>${getGrandTotalPrice()}</p>
         </div>
-        <Link to="/create-order">
-          <button className="mt-6 w-full py-2 bg-blue-600 text-white font-bold rounded-md">
-            Create Order
-          </button>
-        </Link>
+
+        <button
+          onClick={handleCreateOrder}
+          className="mt-6 w-full py-2 bg-blue-600 text-white font-bold rounded-md"
+        >
+          Create Order
+        </button>
       </div>
     </div>
   );

@@ -60,6 +60,8 @@ export default function Header() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     dispatch(setUser({}));
     setUserDropdownOpen(false);
   };

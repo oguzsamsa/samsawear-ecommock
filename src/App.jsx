@@ -28,14 +28,12 @@ function App() {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   useEffect(() => {
-    if (!token) {
-      console.log("yok");
-      history.push("/login");
-    } else {
+    if (token) {
       dispatch(verifyToken(history));
-      dispatch(fetchProducts());
     }
-  }, [token, history, dispatch]);
+
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   const address = axiosInstance.get("/user/address");
   console.log("adresss", address);
@@ -45,17 +43,17 @@ function App() {
       <Header />
       <ToastContainer />
       <Switch>
-        <PrivateRoute exact path="/">
+        <Route exact path="/">
           <Home />
-        </PrivateRoute>
+        </Route>
 
-        <PrivateRoute path="/about">
+        <Route path="/about">
           <About />
-        </PrivateRoute>
+        </Route>
 
-        <PrivateRoute path="/contact">
+        <Route path="/contact">
           <Contact />
-        </PrivateRoute>
+        </Route>
         <PrivateRoute path="/create-order">
           <CreateOrderPage />
         </PrivateRoute>
@@ -68,23 +66,23 @@ function App() {
         <PrivateRoute exact path="/previous-orders">
           <PreviousOrders />
         </PrivateRoute>
-        <PrivateRoute exact path="/shop">
+        <Route exact path="/shop">
           <Shop />
-        </PrivateRoute>
+        </Route>
 
-        <PrivateRoute path="/shop/product-detail/:categoryId/:productId/:name">
+        <Route path="/shop/product-detail/:categoryId/:productId/:name">
           <ProductDetail />
-        </PrivateRoute>
+        </Route>
 
-        <PrivateRoute path="/shopping-cart">
+        <Route path="/shopping-cart">
           <ShoppingCart />
-        </PrivateRoute>
-        <PrivateRoute path="/signup">
+        </Route>
+        <Route path="/signup">
           <SignUp />
-        </PrivateRoute>
-        <PrivateRoute path="/team">
+        </Route>
+        <Route path="/team">
           <Team />
-        </PrivateRoute>
+        </Route>
       </Switch>
       <Footer />
     </>

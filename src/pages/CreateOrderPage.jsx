@@ -211,15 +211,12 @@ const CreateOrderPage = () => {
     if (hasErrors) return;
 
     axiosInstance
-      .put(`/user/address`, currentUpdatingAddress) // Güncellenecek adres bilgilerini gönder
+      .put(`/user/address`, currentUpdatingAddress)
       .then(() => {
-        // Güncel adresleri tekrar al
         return axiosInstance.get("/user/address");
       })
       .then((res) => {
-        // Yeni adres listesini Redux state'ine güncelle
         dispatch(setAddresses(res.data));
-        // Güncelleme formunu kapatma ve sıfırlama
         setIsUpdating(false);
         setCurrentUpdatingAddress(null);
       })
@@ -233,17 +230,17 @@ const CreateOrderPage = () => {
 
     const orderPayload = {
       address_id: selectedAddress,
-      order_date: new Date().toISOString(), // Şu anki zamanı kullanarak ISO formatında tarih.
+      order_date: new Date().toISOString(),
       card_no: selectedCard.card_no,
       card_name: selectedCard.name_on_card,
       card_expire_month: selectedCard.expire_month,
       card_expire_year: selectedCard.expire_year,
-      card_ccv: 123, // Varsayılan değer
-      price: getGrandTotalPrice(), // Fonksiyonundan aldığın toplam fiyat
+      card_ccv: 123,
+      price: getGrandTotalPrice(),
       products: cartItems.map((item) => ({
         product_id: item.product.id,
         count: item.count,
-        detail: `${item.product.description}`, // Ürünün açıklaması detay olarak ekleniyor
+        detail: `${item.product.description}`,
       })),
     };
 
@@ -262,8 +259,6 @@ const CreateOrderPage = () => {
 
     dispatch(setCart([]));
   };
-
-  // CARD INFORMATION //
 
   return (
     <div className="container mx-auto p-4 flex justify-around max-lg:flex-col font-display">
