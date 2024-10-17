@@ -73,7 +73,7 @@ export default function Shop() {
 
   useEffect(() => {
     updateLimit();
-    window.addEventListener("resize", updateLimit); // Ekran boyutu değiştiğinde limiti güncelle
+    window.addEventListener("resize", updateLimit);
     return () => window.removeEventListener("resize", updateLimit);
   }, []);
 
@@ -95,12 +95,11 @@ export default function Shop() {
     if (localFilterText) queryParams.set("filter", localFilterText);
     if (localSort) queryParams.set("sort", localSort);
 
-    // URL'ye sadece gerekli parametreleri ekler
     history.push(`/shop?${queryParams.toString()}`);
     dispatch(setCategoryId(localCategoryId));
     dispatch(setSort(localSort));
     dispatch(setFilterText(localFilterText));
-    dispatch(setOffset(0)); // Offset'i sıfırlama
+    dispatch(setOffset(0));
     dispatch(fetchProducts());
   };
 
@@ -122,9 +121,6 @@ export default function Shop() {
   const currentPage = offset / limit + 1;
   const startItem = offset + 1;
   const endItem = Math.min(offset + limit, total);
-
-  const [displayedProductCount, setDisplayedProductCount] = useState(4);
-  const displayedProducts = productList.slice(0, displayedProductCount);
 
   const renderPagination = () => {
     const pageNumbers = [];

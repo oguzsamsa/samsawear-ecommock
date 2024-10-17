@@ -3,9 +3,13 @@ import {
   cartQuantityDecrease,
   cartQuantityIncrease,
 } from "../redux/actions/shoppingCartActions";
+import { Link } from "react-router-dom/cjs/react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { verifyToken } from "../redux/actions/thunkActions";
 
 export default function ShoppingCartDropdown({ cart }) {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleCartQuantityDecrease = (productId) => {
     dispatch(cartQuantityDecrease(productId));
@@ -19,6 +23,23 @@ export default function ShoppingCartDropdown({ cart }) {
     (total, item) => total + item.product.price * item.count,
     0
   );
+
+  const handleCheckout = async () => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    if (!token) {
+      history.push("/login", { from: "/create-order" });
+    } else {
+      try {
+        await dispatch(verifyToken(history));
+        history.push("/create-order");
+      } catch (error) {
+        console.error("Token verification failed:", error);
+        history.push("/login", { from: "/checkout" });
+      }
+    }
+  };
 
   return (
     <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-300 shadow-lg p-4 z-20">
@@ -37,8 +58,8 @@ export default function ShoppingCartDropdown({ cart }) {
                 className="w-24 h-full object-cover"
               />
               <div className="ml-4 flex-1">
-                <p className="font-bold text-black">{item.product.name}</p>
-                <p className="text-sm text-gray-600">
+                <p className="font-bold text-text-color">{item.product.name}</p>
+                <p className="text-sm text-second-text-color">
                   {item.product.description}
                 </p>
                 <div className="flex items-center mt-2">
@@ -46,20 +67,20 @@ export default function ShoppingCartDropdown({ cart }) {
                     Quantity: {item.count}
                   </span>
                   <button
-                    className="px-2 py-1 mr-2 border font-bold border-second-text-color rounded text-black"
+                    className="w-8 h-8 border-2 border-primary-color rounded-full text-primary-color font-bold flex items-center justify-center mr-1"
                     onClick={() => handleCartQuantityDecrease(item.product.id)}
                   >
                     -
                   </button>
 
                   <button
-                    className="px-2 py-1 border font-bold border-second-text-color rounded text-black"
+                    className="w-8 h-8 border-2 border-primary-color rounded-full text-primary-color font-bold flex items-center justify-center"
                     onClick={() => handleCartQuantityIncrease(item.product.id)}
                   >
                     +
                   </button>
                 </div>
-                <p className="mt-2 font-bold">
+                <p className="mt-2 font-bold text-text-color">
                   ${(item.product.price * item.count).toFixed(2)}
                 </p>
               </div>
@@ -68,14 +89,19 @@ export default function ShoppingCartDropdown({ cart }) {
         </ul>
       )}
       <div className="px-2 pt-4 flex justify-between items-center ">
-        <p className="font-bold">Summary:</p>
-        <p className="font-bold">${totalPrice.toFixed(2)}</p>
+        <p className="font-bold text-text-color">Summary:</p>
+        <p className="font-bold text-text-color">${totalPrice.toFixed(2)}</p>
       </div>
       <div className="mt-4 flex justify-between border-t border-gray-300 pt-2">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
-          Go to Cart
-        </button>
-        <button className="bg-green-500 text-white px-4 py-2 rounded">
+        <Link to="/shopping-cart">
+          <button className="bg-primary-color text-white px-4 py-2 rounded">
+            Go to Cart
+          </button>
+        </Link>
+        <button
+          onClick={handleCheckout}
+          className="bg-success-text-color text-white px-4 py-2 rounded"
+        >
           Checkout
         </button>
       </div>

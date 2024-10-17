@@ -5,17 +5,34 @@ import md5 from "md5";
 import { fetchCategories } from "../redux/actions/thunkActions";
 import { toggleCartDropdown } from "../redux/actions/shoppingCartActions";
 import ShoppingCartDropdown from "../components/ShoppingCartDropdown";
+import { setUser } from "../redux/actions/clientActions";
+import { Link, Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [shopMenuOpen, setShopMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.category.categories);
   const cart = useSelector((state) => state.shoppingCart.cart);
-  const isDropdownOpen = useSelector(
-    (state) => state.shoppingCart.isDropdownOpen
-  );
+
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutId) clearTimeout(timeoutId);
+    setIsDropdownVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    const id = setTimeout(() => {
+      setIsDropdownVisible(false);
+    }, 200);
+    setTimeoutId(id);
+  };
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,6 +53,17 @@ export default function Header() {
 
   const toggleCartDropdownLocal = () => {
     dispatch(toggleCartDropdown());
+  };
+
+  const toggleUserDropdown = () => {
+    setUserDropdownOpen(!userDropdownOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    dispatch(setUser({}));
+    setUserDropdownOpen(false);
   };
 
   const gravatarUrl = user.email
@@ -140,13 +168,43 @@ export default function Header() {
               onClick={toggleUserMenu}
             ></i>
             {user.email ? (
-              <div className="flex items-center gap-2">
-                <img
-                  src={gravatarUrl}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full"
-                />
-                <p className="font-bold hidden lg:block">{user.name}</p>
+              <div className="relative">
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={toggleUserDropdown}
+                >
+                  <img
+                    src={gravatarUrl}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <p className="font-bold hidden lg:block">{user.name}</p>
+                  <i
+                    className={`fas fa-chevron-${
+                      userDropdownOpen ? "up" : "down"
+                    } fa-xs`}
+                  ></i>
+                </div>
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-50">
+                    <ul className="py-1 text-sm text-gray-700">
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </li>
+                      <Link to="/previous-orders">
+                        <li
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        >
+                          Previous Orders
+                        </li>
+                      </Link>
+                    </ul>
+                  </div>
+                )}
               </div>
             ) : (
               <p className="font-bold hidden lg:block">
@@ -174,7 +232,11 @@ export default function Header() {
             </div>
           )}
           <i className="fas fa-search fa-lg"></i>
-          <div className="relative">
+          <div
+            className="relative z-50"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <div
               className="flex items-center gap-1 cursor-pointer"
               onClick={toggleCartDropdownLocal}
@@ -182,7 +244,7 @@ export default function Header() {
               <i className="fas fa-shopping-cart fa-lg"></i>
               <p className="hidden lg:block">{cart.length}</p>
             </div>
-            {isDropdownOpen && <ShoppingCartDropdown cart={cart} />}
+            {isDropdownVisible && <ShoppingCartDropdown cart={cart} />}
           </div>
           <i
             className="fas fa-bars fa-lg lg:hidden cursor-pointer"
@@ -200,20 +262,20 @@ export default function Header() {
         } text-center py-6 font-display text-3xl text-[#737373] lg:hidden`}
       >
         <ul className="flex flex-col gap-3">
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/">Home</NavLink>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/shop">Shop</NavLink>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/about">About</NavLink>
           </li>
-          <li>Blog</li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>Blog</li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/contact">Contact</NavLink>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <NavLink to="/team">Team</NavLink>
           </li>
         </ul>
