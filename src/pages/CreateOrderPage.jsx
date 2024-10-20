@@ -247,7 +247,6 @@ const CreateOrderPage = () => {
     axiosInstance
       .post("/order", orderPayload)
       .then((response) => {
-        console.log("Sipariş başarılı:", response.data);
         history.push({
           pathname: "/order-completed",
           state: { orderInfo: response.data },
