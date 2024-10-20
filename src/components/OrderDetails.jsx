@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const OrderDetails = ({ order }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(order, "lsklşskdorder");
   return (
     <div>
       <button className="mt-2 text-blue-500" onClick={() => setIsOpen(!isOpen)}>
