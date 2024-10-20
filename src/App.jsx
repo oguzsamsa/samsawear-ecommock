@@ -35,9 +35,6 @@ function App() {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const address = axiosInstance.get("/user/address");
-  console.log("adresss", address);
-
   return (
     <>
       <Header />

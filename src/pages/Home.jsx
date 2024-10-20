@@ -96,7 +96,7 @@ export default function Home() {
         <div className="product-cards flex flex-col max-md:gap-12 md:w-5/6 md:flex-row justify-center flex-wrap max-md:w-4/5">
           {fetchState === "FETCHED" ? (
             displayedProducts.map((product) => (
-              <ProductCard product={product} />
+              <ProductCard product={product} key={product.id} />
             ))
           ) : (
             <Spinner />

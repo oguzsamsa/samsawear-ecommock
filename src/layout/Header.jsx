@@ -6,7 +6,7 @@ import { fetchCategories } from "../redux/actions/thunkActions";
 import { toggleCartDropdown } from "../redux/actions/shoppingCartActions";
 import ShoppingCartDropdown from "../components/ShoppingCartDropdown";
 import { setUser } from "../redux/actions/clientActions";
-import { Link, Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,15 +17,23 @@ export default function Header() {
   const user = useSelector((state) => state.client.user);
   const categories = useSelector((state) => state.category.categories);
   const cart = useSelector((state) => state.shoppingCart.cart);
+  const history = useHistory();
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
 
   const handleMouseEnter = () => {
     if (timeoutId) clearTimeout(timeoutId);
-    setIsDropdownVisible(true);
+    if (window.innerWidth >= 768) {
+      setIsDropdownVisible(true);
+    }
   };
 
+  const handleCartClick = () => {
+    if (window.innerWidth < 768) {
+      history.push("/shopping-cart");
+    }
+  };
   const handleMouseLeave = () => {
     const id = setTimeout(() => {
       setIsDropdownVisible(false);
@@ -241,7 +249,10 @@ export default function Header() {
               className="flex items-center gap-1 cursor-pointer"
               onClick={toggleCartDropdownLocal}
             >
-              <i className="fas fa-shopping-cart fa-lg"></i>
+              <i
+                className="fas fa-shopping-cart fa-lg"
+                onClick={handleCartClick}
+              ></i>
               <p className="hidden lg:block">{cart.length}</p>
             </div>
             {isDropdownVisible && <ShoppingCartDropdown cart={cart} />}

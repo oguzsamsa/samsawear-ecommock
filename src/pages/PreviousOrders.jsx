@@ -7,8 +7,6 @@ const PreviousOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log(orders);
-
   useEffect(() => {
     const fetchOrders = async () => {
       try {

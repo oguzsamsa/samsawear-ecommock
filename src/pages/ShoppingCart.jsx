@@ -33,7 +33,6 @@ const ShoppingCart = () => {
     e.preventDefault();
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
-    console.log("Token:", token);
 
     if (!token) {
       history.push("/login", { from: "/create-order" });

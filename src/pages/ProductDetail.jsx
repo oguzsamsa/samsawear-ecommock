@@ -86,8 +86,6 @@ export default function ProductDetail() {
     return <div>Yükleniyor...</div>;
   }
 
-  console.log(displayedProducts, "displayedproductsss");
-
   const handleAddToCart = () => {
     dispatch(addToCart(product));
   };
