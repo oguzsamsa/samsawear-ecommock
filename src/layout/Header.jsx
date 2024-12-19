@@ -108,7 +108,7 @@ export default function Header() {
       <div className="w-5/6 md:w-11/12 mx-auto flex justify-between py-6 text-[#252B42]">
         <div className="flex gap-24">
           <h6 className="font-display font-bold text-2xl">
-            <NavLink to="/">Bandage</NavLink>
+            <NavLink to="/">Samsawear</NavLink>
           </h6>
           <ul className="hidden lg:flex gap-3 items-center text-[#737373] font-bold">
             <li>
